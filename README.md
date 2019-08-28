@@ -2,5 +2,5 @@
 shell script to provision my ubuntu 19.04
 
 ```sh
-$ curl http://bit.ly/2zqP6vh | sudo sh
+$ curl https://raw.githubusercontent.com/verzola/ubuntu-setup/master/setup.sh | sudo sh
 ```
