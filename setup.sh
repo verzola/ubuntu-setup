@@ -90,6 +90,17 @@ echo "Configuring Git..."
 git config --global user.name "Gustavo Verzola"
 git config --global user.email "verzola@gmail.com"
 
-echo "Allow HTTP and SSH ports on firewall..."
+echo "Allowing HTTP and SSH ports on firewall..."
 ufw allow 80
 ufw allow 22
+
+echo "Creating projects folder..."
+if [ ! -d "~/projects" ]; then
+  mkdir ~/projects
+fi
+
+echo "Adding tmux configuration..."
+curl https://raw.githubusercontent.com/verzola/.tmux.conf/master/install.sh | bash
+
+echo "Adding aliases..."
+curl https://raw.githubusercontent.com/verzola/aliases/master/install.sh | bash
