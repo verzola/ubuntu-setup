@@ -1,4 +1,5 @@
 #!/bin/sh
+export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
 get_latest_release() {
@@ -8,38 +9,37 @@ get_latest_release() {
 }
 
 echo "Updating system..."
-apt update
-apt upgrade
-apt dist-upgrade
+apt update && apt upgrade -y && apt dist-upgrade
 
 echo "Installing APT packages..."
 apt install -y \
-apt-transport-https \
-ca-certificates \
-git \
-vim \
-zsh \
-tmux \
-wget \
-curl \
-unzip \
-htop \
-openssh-server \
-build-essential \
-grub-customizer \
-fonts-firacode \
-steam \
-gnome-tweak-tool \
-darktable \
-krita \
-shotwell \
-gnome-shell-extensions \
-chrome-gnome-shell \
-gnome-session \
-filezille
+  apt-transport-https \
+  ca-certificates \
+  git \
+  vim \
+  zsh \
+  tmux \
+  wget \
+  curl \
+  unzip \
+  htop \
+  openssh-server \
+  build-essential \
+  grub-customizer \
+  fonts-firacode \
+  steam \
+  gnome-tweak-tool \
+  darktable \
+  krita \
+  shotwell \
+  gnome-shell-extensions \
+  chrome-gnome-shell \
+  gnome-session \
+  filezilla
 
 echo "Cleaning APT packages..."
 apt autoremove
+apt autoclean
 
 echo "Installing snap apps..."
 snap install spotify
