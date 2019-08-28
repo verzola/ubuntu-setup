@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Helper functions
+get_latest_release() {
+    curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+
 echo "Updating system..."
 apt update
 apt upgrade
@@ -7,30 +14,30 @@ apt dist-upgrade
 
 echo "Installing APT packages..."
 apt install -y \
-     apt-transport-https \
-     ca-certificates \
-     git \
-     vim \
-     zsh \
-     tmux \
-     wget \
-     curl \
-     unzip \
-     htop \
-     openssh-server \
-     build-essential \
-     grub-customizer \
-     fonts-firacode \
-     steam \
-     gnome-tweak-tool \
-     darktable \
-     krita \
-     shotwell \
-     gnome-shell-extensions \
-     chrome-gnome-shell \
-     gnome-session \
-     filezille
-     
+apt-transport-https \
+ca-certificates \
+git \
+vim \
+zsh \
+tmux \
+wget \
+curl \
+unzip \
+htop \
+openssh-server \
+build-essential \
+grub-customizer \
+fonts-firacode \
+steam \
+gnome-tweak-tool \
+darktable \
+krita \
+shotwell \
+gnome-shell-extensions \
+chrome-gnome-shell \
+gnome-session \
+filezille
+
 echo "Cleaning APT packages..."
 apt autoremove
 
@@ -50,6 +57,11 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 rm get-docker.sh
 usermod -aG docker verzola
+
+echo "Installing Docker-Compose"
+curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+docker-compose --version
 
 echo "Installing NodeJS..."
 curl -sL https://deb.nodesource.com/setup_12.x | bash
