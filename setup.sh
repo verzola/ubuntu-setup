@@ -36,6 +36,7 @@ apt install -y \
   chrome-gnome-shell \
   gnome-session \
   thunderbird \
+  gparted \
   filezilla
 
 echo "Cleaning APT packages..."
