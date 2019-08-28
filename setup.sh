@@ -6,6 +6,8 @@ apt upgrade
 
 echo "Installing APT packages..."
 apt install -y \
+     apt-transport-https \
+     ca-certificates \
      git \
      vim \
      curl \
