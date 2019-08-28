@@ -3,6 +3,7 @@
 echo "Updating system..."
 apt update
 apt upgrade
+apt dist-upgrade
 
 echo "Installing APT packages..."
 apt install -y \
@@ -10,19 +11,23 @@ apt install -y \
      ca-certificates \
      git \
      vim \
+     zsh \
+     tmux \
+     wget \
      curl \
      unzip \
+     htop \
      gcc \
      g++ \
      make \
-     zsh \
      grub-customizer \
      fonts-firacode \
      steam \
      gnome-tweak-tool \
      darktable \
      krita \
-     shotwell
+     shotwell \
+     google-chrome-shell
      
 echo "Cleaning APT packages..."
 apt autoremove
