@@ -5,7 +5,7 @@ apt update
 apt upgrade
 
 echo "Installing APT packages..."
-apt install \
+apt install -y \
      git \
      vim \
      curl \
@@ -21,6 +21,9 @@ apt install \
      darktable \
      krita \
      shotwell
+     
+echo "Cleaning APT packages..."
+apt autoremove
 
 echo "Installing snap apps..."
 snap install spotify
