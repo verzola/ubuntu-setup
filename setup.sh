@@ -17,6 +17,7 @@ apt install -y \
      curl \
      unzip \
      htop \
+     openssh-server \
      build-essential \
      grub-customizer \
      fonts-firacode \
@@ -25,7 +26,8 @@ apt install -y \
      darktable \
      krita \
      shotwell \
-     google-chrome-shell
+     gnome-shell-extensions \
+     filezille
      
 echo "Cleaning APT packages..."
 apt autoremove
@@ -57,3 +59,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 echo "Configuring Git..."
 git config --global user.name "Gustavo Verzola"
 git config --global user.email "verzola@gmail.com"
+
+echo "Allow HTTP and SSH ports on firewall..."
+ufw allow 80
+ufw allow 22
