@@ -33,12 +33,6 @@ snap install slack --classic
 snap install google-cloud-sdk --classic
 snap install skype --classic
 
-echo "installing Google Chrome..."
-sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-apt update
-apt install google-chrome
-
 echo "Installing Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
