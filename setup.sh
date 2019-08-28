@@ -17,9 +17,7 @@ apt install -y \
      curl \
      unzip \
      htop \
-     gcc \
-     g++ \
-     make \
+     build-essential \
      grub-customizer \
      fonts-firacode \
      steam \
