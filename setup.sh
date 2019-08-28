@@ -16,7 +16,7 @@ apt install -y \
   apt-transport-https \
   ca-certificates \
   git \
-  vim \
+  neovim \
   zsh \
   tmux \
   wget \
