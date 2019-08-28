@@ -82,6 +82,10 @@ apt-get update && apt-get install yarn
 echo "Installing Oh My Zsh..."
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
+echo "Installing Stacer..."
+add-apt-repository ppa:oguzhaninan/stacer -y
+apt install stacer -y
+
 echo "Configuring Git..."
 git config --global user.name "Gustavo Verzola"
 git config --global user.email "verzola@gmail.com"
