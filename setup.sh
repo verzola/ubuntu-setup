@@ -43,7 +43,7 @@ echo "Installing Docker..."
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 rm get-docker.sh
-usermod -aG docker $USER
+usermod -aG docker verzola
 
 echo "Installing NodeJS..."
 curl -sL https://deb.nodesource.com/setup_12.x | bash
