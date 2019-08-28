@@ -27,6 +27,8 @@ apt install -y \
      krita \
      shotwell \
      gnome-shell-extensions \
+     chrome-gnome-shell \
+     gnome-session \
      filezille
      
 echo "Cleaning APT packages..."
