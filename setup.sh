@@ -35,6 +35,7 @@ apt install -y \
   gnome-shell-extensions \
   chrome-gnome-shell \
   gnome-session \
+  thunderbird \
   filezilla
 
 echo "Cleaning APT packages..."
