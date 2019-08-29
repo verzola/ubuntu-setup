@@ -94,6 +94,9 @@ echo "Allowing HTTP and SSH ports on firewall..."
 ufw allow 80
 ufw allow 22
 
+echo "Making Linux use Local Time..."
+timedatectl set-local-rtc 1 --adjust-system-clock
+
 echo "Creating projects folder..."
 if [ ! -d "~/projects" ]; then
   mkdir ~/projects
