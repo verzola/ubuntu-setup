@@ -115,4 +115,4 @@ setup() {
     curl https://raw.githubusercontent.com/verzola/aliases/master/install.sh | bash
 }
 
-setup()
+setup
