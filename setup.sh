@@ -19,31 +19,24 @@ apt purge apport
 
 echo "Installing APT packages..."
 apt install -y \
-  apt-transport-https \
-  ca-certificates \
   git \
   neovim \
   zsh \
   tmux \
-  wget \
   curl \
-  unzip \
   htop \
   openssh-server \
   build-essential \
   grub-customizer \
-  fonts-firacode \
-  steam \
-  gnome-tweak-tool \
-  darktable \
-  krita \
   shotwell \
+  krita \
+  darktable \
+  fonts-firacode \
+  gnome-tweak-tool \
   gnome-shell-extensions \
   chrome-gnome-shell \
   gnome-session \
-  thunderbird \
-  gparted \
-  filezilla
+  steam
 
 echo "Cleaning APT packages..."
 apt autoremove -y
@@ -70,6 +63,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 rm get-docker.sh
 usermod -aG docker verzola
+docker --version
 
 echo "Installing Docker-Compose"
 curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -79,11 +73,13 @@ docker-compose --version
 echo "Installing NodeJS..."
 curl -sL https://deb.nodesource.com/setup_12.x | bash
 apt install nodejs
+node --version
 
 echo "Installing Yarn..."
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 apt-get update && apt-get install yarn
+yarn --version
 
 if [ -d ~/.oh-my-zsh ]; then
   echo "Updating Oh My Zsh..."
