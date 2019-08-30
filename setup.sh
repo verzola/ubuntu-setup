@@ -24,11 +24,11 @@ exists() {
 setup() {
     echo "$cyan> Updating system... $reset"
     sudo apt update && sudo apt full-upgrade -y
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Removing apport...$reset"
     sudo apt purge apport
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Installing APT packages...$reset"
     sudo apt install -y \
@@ -50,11 +50,11 @@ setup() {
       chrome-gnome-shell \
       gnome-session \
       steam
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Cleaning APT packages...$reset"
     sudo apt autoremove -y
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Installing snap apps...$reset"
     sudo snap install spotify
@@ -66,7 +66,7 @@ setup() {
     sudo snap install slack --classic
     sudo snap install google-cloud-sdk --classic
     sudo snap install skype --classic
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists google-chrome; then
       echo "$cyan> Google Chrome is already installed, skipping install...$reset"
@@ -76,7 +76,7 @@ setup() {
       sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
       sudo apt update && sudo apt install google-chrome-stable
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists docker; then
       echo "$cyan> Docker is already installed, skipping install...$reset"
@@ -88,7 +88,7 @@ setup() {
       usermod -aG docker verzola
       docker --version
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists docker-compose; then
       echo "$cyan> Docker-compose is already installed, skipping install...$reset"
@@ -98,7 +98,7 @@ setup() {
       sudo chmod +x /usr/local/bin/docker-compose
       docker-compose --version
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists node; then
       echo "$cyan> NodeJS is already installed, skipping install...$reset"
@@ -108,7 +108,7 @@ setup() {
       sudo apt install nodejs
       node --version
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists yarn; then
       echo "$cyan> Yarn is already installed, skipping install...$reset"
@@ -119,7 +119,7 @@ setup() {
       sudo apt-get update && sudo apt-get install yarn
       yarn --version
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     if exists stacer; then
       echo "$cyan> Stacer is already installed, skipping install...$reset"
@@ -128,16 +128,16 @@ setup() {
       sudo add-apt-repository ppa:oguzhaninan/stacer -y
       sudo apt install stacer -y
     fi
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Allowing HTTP and SSH ports on firewall...$reset"
     sudo ufw allow 80
     sudo ufw allow 22
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Making Linux use Local Time...$reset"
     timedatectl set-local-rtc 1 --adjust-system-clock
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Configuring Git...$reset"
     git config --global user.name "Gustavo Verzola"
@@ -146,21 +146,89 @@ setup() {
 
     echo "$cyan> Creating projects folder..."
     mkdir -p ~/projects/verzola/
-    echo "$green ✓ $reset"
+    echo "$green> ✓ $reset"
 
     echo "$cyan> Adding zsh config...$reset"
-    sh -c "$(wget -O - https://zsh.verzola.net)"
+    if [ ! -d ~/projects/verzola/zshrc ]; then
+      git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
+    else
+      git -C ~/projects/verzola/zshrc pull origin master
+    fi
+    echo "$green> ✓ $reset"
 
-    echo "$cyan> Adding vim config...$reset"
-    sh -c "$(wget -O - https://vim.verzola.net)"
+    echo "$cyan> Linking zshrc...$reset"
+    if [ ! -f ~/.zshrc ]; then
+        ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
+    fi
+    echo "$green> ✓ $reset"
 
-    echo "$cyan> Adding tmux config...$reset"
-    sh -c "$(wget -O - https://tmux.verzola.net)"
+    if [ -d ~/.oh-my-zsh ]; then
+      echo "$cyan> Updating Oh My Zsh...$reset"
+      zsh -ic "upgrade_oh_my_zsh"
+    else
+      echo "$cyan> Installing Oh My Zsh...$reset"
+      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    fi
+    echo "$green> ✓ $reset"
 
-    echo "$cyan> Adding aliases...$reset"
-    sh -c "$(wget -O - https://aliases.verzola.net)"
+    echo "$cyan> Installing vim-plug...$reset"
+    if [ ! -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    fi
+    echo "$green> ✓ $reset"
 
-    echo "$cyan Finished! $green ✓ $reset"
+    if [ ! -d ~/projects/verzola/vimrc ]; then
+        echo "$cyan> Cloning verzola's .vimrc...$reset"
+        git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
+    else
+        echo "$cyan> Updating verzola's .vimrc...$reset"
+        git -C ~/projects/verzola/vimrc pull origin master
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Linking vimrc...$reset"
+    if [ ! -L ~/.vimrc ]; then
+        ln -s ~/projects/vimrc/.vimrc ~/.vimrc
+        ln -s ~/projects/vimrc/.vimrc ~/.config/nvim/init.vim
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Installing plugins...$reset"
+    vim +PlugInstall +qall
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Installing Tmux Plugin Manager...$reset"
+    if [ ! -d ~/.tmux/plugins/tpm ]; then
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    else
+        git -C ~/.tmux/plugins/tpm pull origin master
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Fetching tmux config...$reset"
+    if [ ! -d ~/projects/verzola/tmux.conf ]; then
+        git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
+    else
+        git -C ~/projects/verzola/tmux.conf pull origin master
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Linking tmux config...$reset"
+    if [ ! -f ~/.tmux.conf ]; then
+        ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Fetching aliases...$reset"
+    if [ ! -d ~/projects/verzola/aliases ]; then
+        git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
+    else
+        git -C ~/projects/aliases pull origin master
+    fi
+    echo "$green> ✓ $reset"
+
+    echo "$cyan> Finished! $green ✓ $reset"
 }
 
 setup
