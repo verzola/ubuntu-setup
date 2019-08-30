@@ -22,6 +22,8 @@ exists() {
 }
 
 setup() {
+    echo "\n👉 verzola's ubuntu setup 🤘$reset\n"
+
     echo "$cyan> Updating system... $reset"
     sudo apt update && sudo apt full-upgrade -y
     echo "$green> ✓ $reset"
@@ -224,6 +226,10 @@ setup() {
     fi
     echo "$green> ✓ $reset"
 
+    echo "$cyan> Installing Tmux plugins...$reset"
+    ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+    echo "$green> ✓ $reset"
+
     echo "$cyan> Fetching aliases...$reset"
     if [ ! -d ~/projects/verzola/aliases ]; then
         git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
@@ -232,7 +238,7 @@ setup() {
     fi
     echo "$green> ✓ $reset"
 
-    echo "$cyan> Finished! $green ✓ $reset"
+    echo "Finished! 🎉"
 }
 
 setup
