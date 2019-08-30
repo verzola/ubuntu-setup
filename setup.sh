@@ -2,19 +2,17 @@
 set -e
 
 reset="\033[0m"
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-cyan="\033[36m"
-white="\033[37m"
+success="\033[32m"
+warning="\033[33m"
+main="\033[34m"
 
 export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' | # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+  curl --silent "https://api.github.com/repos/$1/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/'
 }
 
 exists() {
@@ -22,15 +20,77 @@ exists() {
 }
 
 step() {
-  echo "\n$cyan> $1$reset..."
+  echo "\n$main> $1$reset..."
 }
 
 check() {
-  echo "$green> ✔️ $reset"
+  echo "$success> ✔️ $reset"
 }
 
 warning() {
-  echo "⚠️  $1"
+  echo "$warning>⚠️  $1"
+}
+
+install_chrome() {
+    if exists google-chrome; then
+      warning "Google Chrome is already installed, skipping install"
+    else
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+      sudo apt update && sudo apt install google-chrome-stable
+    fi
+}
+
+install_docker() {
+    if exists docker; then
+      warning "Docker is already installed, skipping install"
+    else
+      curl -fsSL https://get.docker.com -o get-docker.sh
+      sh get-docker.sh
+      rm get-docker.sh
+      usermod -aG docker verzola
+      docker --version
+    fi
+}
+
+install_docker_compose() {
+    if exists docker-compose; then
+      warning "Docker-compose is already installed, skipping install"
+    else
+      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      sudo chmod +x /usr/local/bin/docker-compose
+      docker-compose --version
+    fi
+}
+
+install_nodejs() {
+    if exists node; then
+      warning "NodeJS is already installed, skipping install"
+    else
+      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      sudo apt install nodejs
+      node --version
+    fi
+}
+
+install_yarn() {
+    if exists yarn; then
+      warning "Yarn is already installed, skipping install"
+    else
+      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      sudo apt-get update && sudo apt-get install yarn
+      yarn --version
+    fi
+}
+
+install_stacer() {
+    if exists stacer; then
+      warning "Stacer is already installed, skipping install"
+    else
+      sudo add-apt-repository ppa:oguzhaninan/stacer -y
+      sudo apt install stacer -y
+    fi
 }
 
 setup() {
@@ -83,65 +143,27 @@ setup() {
   check
 
   step "Installing Google Chrome"
-  if exists google-chrome; then
-    warning "Google Chrome is already installed, skipping install"
-  else
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-    sudo apt update && sudo apt install google-chrome-stable
-  fi
+      install_chrome
   check
 
   step "Installing Docker"
-    if exists docker; then
-      warning "Docker is already installed, skipping install"
-    else
-      curl -fsSL https://get.docker.com -o get-docker.sh
-      sh get-docker.sh
-      rm get-docker.sh
-      usermod -aG docker verzola
-      docker --version
-    fi
+      install_docker
   check
 
-  step " Installing Docker-Compose"
-    if exists docker-compose; then
-      warning "Docker-compose is already installed, skipping install"
-    else
-      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      sudo chmod +x /usr/local/bin/docker-compose
-      docker-compose --version
-    fi
+  step "Installing Docker-Compose"
+      install_docker_compose
   check
 
   step "Installing NodeJS"
-    if exists node; then
-      warning "NodeJS is already installed, skipping install"
-    else
-      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      sudo apt install nodejs
-      node --version
-    fi
+      install_nodejs
   check
 
   step "Installing Yarn"
-    if exists yarn; then
-      warning "Yarn is already installed, skipping install"
-    else
-      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-      sudo apt-get update && sudo apt-get install yarn
-      yarn --version
-    fi
+      install_nodejs
   check
 
   step "Installing Stacer"
-    if exists stacer; then
-      warning "Stacer is already installed, skipping install"
-    else
-      sudo add-apt-repository ppa:oguzhaninan/stacer -y
-      sudo apt install stacer -y
-    fi
+      install_stacer
   check
 
   step "Allowing HTTP and SSH ports on firewall"
@@ -192,15 +214,15 @@ setup() {
   check
 
   if [ ! -d ~/projects/verzola/vimrc ]; then
-    step "Cloning verzola's .vimrc"
+    step "Fetching vim config"
     git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
   else
-    step "Updating verzola's .vimrc"
+    step "Updating vim config"
     git -C ~/projects/verzola/vimrc pull origin master
   fi
   check
 
-  step "Linking vimrc"
+  step "Linking vim config"
     if [ ! -L ~/.vimrc ]; then
       ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
     fi
@@ -210,7 +232,7 @@ setup() {
     fi
   check
 
-  step "Installing plugins"
+  step "Installing vim plugins"
     vim +PlugInstall +qall
   check
 
@@ -236,7 +258,7 @@ setup() {
     fi
   check
 
-  step "Installing Tmux plugins"
+  step "Installing tmux plugins"
     ~/.tmux/plugins/tpm/scripts/install_plugins.sh
   check
 
