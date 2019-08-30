@@ -12,7 +12,7 @@ get_latest_release() {
 }
 
 echo "Updating system..."
-apt update && apt upgrade -y && apt dist-upgrade
+apt update && apt full-upgrade -y
 
 echo "Removing apport..."
 apt purge apport
