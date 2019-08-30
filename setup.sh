@@ -1,5 +1,4 @@
 #!/bin/sh
-
 set -e
 
 reset="\033[0m"
