@@ -2,6 +2,13 @@
 
 set -e
 
+reset="\033[0m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+cyan="\033[36m"
+white="\033[37m"
+
 export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
@@ -16,16 +23,16 @@ exists() {
 }
 
 setup() {
-    echo "Updating system..."
-    apt update && apt full-upgrade -y
-    echo "✓"
+    echo "$cyan> Updating system... $reset"
+    sudo apt update && sudo apt full-upgrade -y
+    echo "$green ✓ $reset"
 
-    echo "Removing apport..."
-    apt purge apport
-    echo "✓"
+    echo "$cyan> Removing apport...$reset"
+    sudo apt purge apport
+    echo "$green ✓ $reset"
 
-    echo "Installing APT packages..."
-    apt install -y \
+    echo "$cyan> Installing APT packages...$reset"
+    sudo apt install -y \
       git \
       neovim \
       zsh \
@@ -44,116 +51,117 @@ setup() {
       chrome-gnome-shell \
       gnome-session \
       steam
-    echo "✓"
+    echo "$green ✓ $reset"
 
-    echo "Cleaning APT packages..."
-    apt autoremove -y
-    apt autoclean
-    echo "✓"
+    echo "$cyan> Cleaning APT packages...$reset"
+    sudo apt autoremove -y
+    echo "$green ✓ $reset"
 
-    echo "Installing snap apps..."
-    snap install spotify
-    snap install discord
-    snap install telegram-desktop
-    snap install postman
-    snap install code --classic
-    snap install android-studio --classic
-    snap install slack --classic
-    snap install google-cloud-sdk --classic
-    snap install skype --classic
-    echo "✓"
+    echo "$cyan> Installing snap apps...$reset"
+    sudo snap install spotify
+    sudo snap install discord
+    sudo snap install telegram-desktop
+    sudo snap install postman
+    sudo snap install code --classic
+    sudo snap install android-studio --classic
+    sudo snap install slack --classic
+    sudo snap install google-cloud-sdk --classic
+    sudo snap install skype --classic
+    echo "$green ✓ $reset"
 
     if exists google-chrome; then
-      echo "Google Chrome is already installed, skipping install..."
+      echo "$cyan> Google Chrome is already installed, skipping install...$reset"
     else
-      echo "Installing Google Chrome..."
-      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-      sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-      apt update && apt install google-chrome-stable
+      echo "$cyan> Installing Google Chrome...$reset"
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+      sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+      sudo apt update && sudo apt install google-chrome-stable
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
     if exists docker; then
-      echo "Docker is already installed, skipping install..."
+      echo "$cyan> Docker is already installed, skipping install...$reset"
     else
-      echo "Installing Docker..."
+      echo "$cyan> Installing Docker...$reset"
       curl -fsSL https://get.docker.com -o get-docker.sh
       sh get-docker.sh
       rm get-docker.sh
       usermod -aG docker verzola
       docker --version
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
     if exists docker-compose; then
-      echo "Docker-compose is already installed, skipping install..."
+      echo "$cyan> Docker-compose is already installed, skipping install...$reset"
     else
-      echo "Installing Docker-Compose"
-      curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      chmod +x /usr/local/bin/docker-compose
+      echo "$cyan> Installing Docker-Compose...$reset"
+      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      sudo chmod +x /usr/local/bin/docker-compose
       docker-compose --version
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
     if exists node; then
-      echo "NodeJS is already installed, skipping install..."
+      echo "$cyan> NodeJS is already installed, skipping install...$reset"
     else
-      echo "Installing NodeJS..."
-      curl -sL https://deb.nodesource.com/setup_12.x | bash
-      apt install nodejs
+      echo "$cyan> Installing NodeJS...$reset"
+      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      sudo apt install nodejs
       node --version
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
     if exists yarn; then
-      echo "Yarn is already installed, skipping install..."
+      echo "$cyan> Yarn is already installed, skipping install...$reset"
     else
-      echo "Installing Yarn..."
-      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-      echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-      apt-get update && apt-get install yarn
+      echo "$cyan> Installing Yarn...$reset"
+      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      sudo apt-get update && sudo apt-get install yarn
       yarn --version
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
     if exists stacer; then
-      echo "Stacer is already installed, skipping install..."
+      echo "$cyan> Stacer is already installed, skipping install...$reset"
     else
-      echo "Installing Stacer..."
-      add-apt-repository ppa:oguzhaninan/stacer -y
-      apt install stacer -y
+      echo "$cyan> Installing Stacer...$reset"
+      sudo add-apt-repository ppa:oguzhaninan/stacer -y
+      sudo apt install stacer -y
     fi
-    echo "✓"
+    echo "$green ✓ $reset"
 
-    echo "Allowing HTTP and SSH ports on firewall..."
-    ufw allow 80
-    ufw allow 22
-    echo "✓"
+    echo "$cyan> Allowing HTTP and SSH ports on firewall...$reset"
+    sudo ufw allow 80
+    sudo ufw allow 22
+    echo "$green ✓ $reset"
 
-    echo "Making Linux use Local Time..."
+    echo "$cyan> Making Linux use Local Time...$reset"
     timedatectl set-local-rtc 1 --adjust-system-clock
-    echo "✓"
+    echo "$green ✓ $reset"
 
-    echo "Configuring Git..."
+    echo "$cyan> Configuring Git...$reset"
     git config --global user.name "Gustavo Verzola"
     git config --global user.email "verzola@gmail.com"
-    echo "✓"
+    echo "$green ✓ $reset"
 
-    echo "Creating projects folder..."
+    echo "$cyan> Creating projects folder..."
     mkdir -p ~/projects/verzola/
-    echo "✓"
+    echo "$green ✓ $reset"
 
-    echo "Adding zsh config..."
-    curl https://zsh.verzola.net | sh
+    echo "$cyan> Adding zsh config...$reset"
+    sh -c "$(wget -O - https://zsh.verzola.net)"
 
-    echo "Adding vim config..."
-    curl https://vim.verzola.net | sh
+    echo "$cyan> Adding vim config...$reset"
+    sh -c "$(wget -O - https://vim.verzola.net)"
 
-    echo "Adding tmux config..."
-    curl https://tmux.verzola.net | sh
+    echo "$cyan> Adding tmux config...$reset"
+    sh -c "$(wget -O - https://tmux.verzola.net)"
 
-    echo "Adding aliases..."
-    curl https://aliases.verzola.net | sh
+    echo "$cyan> Adding aliases...$reset"
+    sh -c "$(wget -O - https://aliases.verzola.net)"
+
+    echo "$cyan Finished! $green ✓ $reset"
 }
 
 setup
