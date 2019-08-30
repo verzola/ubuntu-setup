@@ -14,6 +14,9 @@ get_latest_release() {
 echo "Updating system..."
 apt update && apt upgrade -y && apt dist-upgrade
 
+echo "Removing apport..."
+apt purge apport
+
 echo "Installing APT packages..."
 apt install -y \
   apt-transport-https \
