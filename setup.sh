@@ -18,9 +18,11 @@ exists() {
 setup() {
     echo "Updating system..."
     apt update && apt full-upgrade -y
+    echo "✓"
 
     echo "Removing apport..."
     apt purge apport
+    echo "✓"
 
     echo "Installing APT packages..."
     apt install -y \
@@ -42,10 +44,12 @@ setup() {
       chrome-gnome-shell \
       gnome-session \
       steam
+    echo "✓"
 
     echo "Cleaning APT packages..."
     apt autoremove -y
     apt autoclean
+    echo "✓"
 
     echo "Installing snap apps..."
     snap install spotify
@@ -57,6 +61,7 @@ setup() {
     snap install slack --classic
     snap install google-cloud-sdk --classic
     snap install skype --classic
+    echo "✓"
 
     if exists google-chrome; then
       echo "Google Chrome is already installed, skipping install..."
@@ -66,6 +71,7 @@ setup() {
       sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
       apt update && apt install google-chrome-stable
     fi
+    echo "✓"
 
     if exists docker; then
       echo "Docker is already installed, skipping install..."
@@ -77,6 +83,7 @@ setup() {
       usermod -aG docker verzola
       docker --version
     fi
+    echo "✓"
 
     if exists docker-compose; then
       echo "Docker-compose is already installed, skipping install..."
@@ -86,6 +93,7 @@ setup() {
       chmod +x /usr/local/bin/docker-compose
       docker-compose --version
     fi
+    echo "✓"
 
     if exists node; then
       echo "NodeJS is already installed, skipping install..."
@@ -95,6 +103,7 @@ setup() {
       apt install nodejs
       node --version
     fi
+    echo "✓"
 
     if exists yarn; then
       echo "Yarn is already installed, skipping install..."
@@ -105,6 +114,7 @@ setup() {
       apt-get update && apt-get install yarn
       yarn --version
     fi
+    echo "✓"
 
     if exists stacer; then
       echo "Stacer is already installed, skipping install..."
@@ -113,34 +123,37 @@ setup() {
       add-apt-repository ppa:oguzhaninan/stacer -y
       apt install stacer -y
     fi
-
-    if [ -d ~/.oh-my-zsh ]; then
-      echo "Updating Oh My Zsh..."
-      zsh -ic "upgrade_oh_my_zsh"
-    else
-      echo "Installing Oh My Zsh..."
-      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    fi
-
-    echo "Configuring Git..."
-    git config --global user.name "Gustavo Verzola"
-    git config --global user.email "verzola@gmail.com"
+    echo "✓"
 
     echo "Allowing HTTP and SSH ports on firewall..."
     ufw allow 80
     ufw allow 22
+    echo "✓"
 
     echo "Making Linux use Local Time..."
     timedatectl set-local-rtc 1 --adjust-system-clock
+    echo "✓"
+
+    echo "Configuring Git..."
+    git config --global user.name "Gustavo Verzola"
+    git config --global user.email "verzola@gmail.com"
+    echo "✓"
 
     echo "Creating projects folder..."
     mkdir -p ~/projects/verzola/
+    echo "✓"
 
-    echo "Adding tmux configuration..."
-    curl https://raw.githubusercontent.com/verzola/.tmux.conf/master/install.sh | bash
+    echo "Adding zsh config..."
+    curl https://zsh.verzola.net | sh
+
+    echo "Adding vim config..."
+    curl https://vim.verzola.net | sh
+
+    echo "Adding tmux config..."
+    curl https://tmux.verzola.net | sh
 
     echo "Adding aliases..."
-    curl https://raw.githubusercontent.com/verzola/aliases/master/install.sh | bash
+    curl https://aliases.verzola.net | sh
 }
 
 setup
