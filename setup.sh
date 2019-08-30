@@ -26,7 +26,11 @@ step() {
 }
 
 check() {
-  echo "$green> ✓ $reset"
+  echo "$green> ✔️ $reset"
+}
+
+warning() {
+  echo "⚠️  $1"
 }
 
 setup() {
@@ -78,66 +82,66 @@ setup() {
     sudo snap install skype --classic
   check
 
+  step "Installing Google Chrome"
   if exists google-chrome; then
-    step "Google Chrome is already installed, skipping install"
+    warning "Google Chrome is already installed, skipping install"
   else
-    step "Installing Google Chrome"
     wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
     sudo apt update && sudo apt install google-chrome-stable
   fi
   check
 
-  if exists docker; then
-    step "Docker is already installed, skipping install"
-  else
-    step "Installing Docker"
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    rm get-docker.sh
-    usermod -aG docker verzola
-    docker --version
-  fi
+  step "Installing Docker"
+    if exists docker; then
+      warning "Docker is already installed, skipping install"
+    else
+      curl -fsSL https://get.docker.com -o get-docker.sh
+      sh get-docker.sh
+      rm get-docker.sh
+      usermod -aG docker verzola
+      docker --version
+    fi
   check
 
-  if exists docker-compose; then
-    step "Docker-compose is already installed, skipping install"
-  else
-    step " Installing Docker-Compose"
-    sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    docker-compose --version
-  fi
+  step " Installing Docker-Compose"
+    if exists docker-compose; then
+      warning "Docker-compose is already installed, skipping install"
+    else
+      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      sudo chmod +x /usr/local/bin/docker-compose
+      docker-compose --version
+    fi
   check
 
-  if exists node; then
-    step "NodeJS is already installed, skipping install"
-  else
-    step "Installing NodeJS"
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-    sudo apt install nodejs
-    node --version
-  fi
+  step "Installing NodeJS"
+    if exists node; then
+      warning "NodeJS is already installed, skipping install"
+    else
+      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      sudo apt install nodejs
+      node --version
+    fi
   check
 
-  if exists yarn; then
-    step "Yarn is already installed, skipping install"
-  else
-    step "Installing Yarn"
-    curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-    sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-    sudo apt-get update && sudo apt-get install yarn
-    yarn --version
-  fi
+  step "Installing Yarn"
+    if exists yarn; then
+      warning "Yarn is already installed, skipping install"
+    else
+      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      sudo apt-get update && sudo apt-get install yarn
+      yarn --version
+    fi
   check
 
-  if exists stacer; then
-    step "Stacer is already installed, skipping install"
-  else
-    step "Installing Stacer"
-    sudo add-apt-repository ppa:oguzhaninan/stacer -y
-    sudo apt install stacer -y
-  fi
+  step "Installing Stacer"
+    if exists stacer; then
+      warning "Stacer is already installed, skipping install"
+    else
+      sudo add-apt-repository ppa:oguzhaninan/stacer -y
+      sudo apt install stacer -y
+    fi
   check
 
   step "Allowing HTTP and SSH ports on firewall"
@@ -154,7 +158,7 @@ setup() {
     git config --global user.email "verzola@gmail.com"
   check
 
-  step "Creating projects folder..."
+  step "Creating projects folder"
     mkdir -p ~/projects/verzola/
   check
 
@@ -244,7 +248,7 @@ setup() {
     fi
   check
 
-  echo "Finished! 🎉"
+  echo "\nFinished! 🎉"
 }
 
 setup
