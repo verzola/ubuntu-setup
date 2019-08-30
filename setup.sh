@@ -168,6 +168,7 @@ setup() {
     else
       echo "$cyan> Installing Oh My Zsh...$reset"
       sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+      exit
     fi
     echo "$green> ✓ $reset"
 
@@ -189,8 +190,11 @@ setup() {
 
     echo "$cyan> Linking vimrc...$reset"
     if [ ! -L ~/.vimrc ]; then
-        ln -s ~/projects/vimrc/.vimrc ~/.vimrc
-        ln -s ~/projects/vimrc/.vimrc ~/.config/nvim/init.vim
+        ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
+    fi
+
+    if [ ! -L ~/.config/nvim/init.vim ]; then
+        ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
     fi
     echo "$green> ✓ $reset"
 
