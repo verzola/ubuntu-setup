@@ -218,7 +218,7 @@ setup() {
   sudo apt update && sudo apt full-upgrade -y
   check
 
-  step "Removing packages"
+  step "Removing APT packages"
   sudo apt purge apport
   check
 
@@ -264,7 +264,7 @@ setup() {
   install_docker
   install_docker_compose
   install_nodejs
-  install_nodejs
+  install_yarn
   install_stacer
 
   step "Allowing ports on firewall"
