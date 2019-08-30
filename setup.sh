@@ -32,6 +32,8 @@ warning() {
 }
 
 install_chrome() {
+  step "Installing Google Chrome"
+
   if exists google-chrome; then
     warning "Google Chrome is already installed, skipping install"
   else
@@ -39,9 +41,13 @@ install_chrome() {
     sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
     sudo apt update && sudo apt install google-chrome-stable
   fi
+
+  check
 }
 
 install_docker() {
+  step "Installing Docker"
+
   if exists docker; then
     warning "Docker is already installed, skipping install"
   else
@@ -51,9 +57,13 @@ install_docker() {
     usermod -aG docker verzola
     docker --version
   fi
+
+  check
 }
 
 install_docker_compose() {
+  step "Installing Docker Compose"
+
   if exists docker-compose; then
     warning "Docker-compose is already installed, skipping install"
   else
@@ -61,9 +71,13 @@ install_docker_compose() {
     sudo chmod +x /usr/local/bin/docker-compose
     docker-compose --version
   fi
+
+  check
 }
 
 install_nodejs() {
+  step "Installing NodeJS"
+
   if exists node; then
     warning "NodeJS is already installed, skipping install"
   else
@@ -71,9 +85,13 @@ install_nodejs() {
     sudo apt install nodejs
     node --version
   fi
+
+  check
 }
 
 install_yarn() {
+  step "Installing Yarn"
+
   if exists yarn; then
     warning "Yarn is already installed, skipping install"
   else
@@ -82,15 +100,21 @@ install_yarn() {
     sudo apt-get update && sudo apt-get install yarn
     yarn --version
   fi
+
+  check
 }
 
 install_stacer() {
+  step "Installing Stacer"
+
   if exists stacer; then
     warning "Stacer is already installed, skipping install"
   else
     sudo add-apt-repository ppa:oguzhaninan/stacer -y
     sudo apt install stacer -y
   fi
+
+  check
 }
 
 configure_zsh() {
@@ -188,7 +212,7 @@ configure_aliases() {
 }
 
 setup() {
-  echo "\n👉 verzola's ubuntu setup 🤘"
+  echo "\n👉 Verzola's Ubuntu 19.04 Setup 🤘"
 
   step "Updating system"
   sudo apt update && sudo apt full-upgrade -y
@@ -236,36 +260,19 @@ setup() {
   sudo snap install skype --classic
   check
 
-  step "Installing Google Chrome"
   install_chrome
-  check
-
-  step "Installing Docker"
   install_docker
-  check
-
-  step "Installing Docker-Compose"
   install_docker_compose
-  check
-
-  step "Installing NodeJS"
   install_nodejs
-  check
-
-  step "Installing Yarn"
   install_nodejs
-  check
-
-  step "Installing Stacer"
   install_stacer
-  check
 
-  step "Allowing HTTP and SSH ports on firewall"
+  step "Allowing ports on firewall"
   sudo ufw allow 80
   sudo ufw allow 22
   check
 
-  step "Making Linux use Local Time"
+  step "Configure date to use Local Time"
   timedatectl set-local-rtc 1 --adjust-system-clock
   check
 
