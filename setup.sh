@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -e
+
 export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
@@ -9,7 +12,10 @@ get_latest_release() {
 }
 
 echo "Updating system..."
-apt update && apt upgrade -y && apt dist-upgrade
+apt update && apt full-upgrade -y
+
+echo "Removing apport..."
+apt purge apport
 
 echo "Installing APT packages..."
 apt install -y \
@@ -40,7 +46,7 @@ apt install -y \
   filezilla
 
 echo "Cleaning APT packages..."
-apt autoremove
+apt autoremove -y
 apt autoclean
 
 echo "Installing snap apps..."
@@ -56,7 +62,7 @@ snap install skype --classic
 
 echo "Installing Google Chrome..."
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
 apt update && apt install google-chrome-stable
 
 echo "Installing Docker..."

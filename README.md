@@ -1,6 +1,6 @@
 # ubuntu-setup
-shell script to provision my ubuntu 19.04
+shell script to setup my ubuntu 19.04
 
 ```sh
-$ curl https://raw.githubusercontent.com/verzola/ubuntu-setup/master/setup.sh | sudo sh
+$ sudo sh -c "$(wget -O - https://setup.verzola.net)"
 ```
