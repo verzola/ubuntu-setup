@@ -1,12 +1,15 @@
 #!/bin/sh
 set -e
 
+# color vars
 reset="\033[0m"
 success="\033[32m"
 warning="\033[33m"
 main="\033[34m"
 
+# env vars
 export DEBIAN_FRONTEND=noninteractive
+export RUNZSH=no
 
 # Helper functions
 get_latest_release() {
