@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+
 export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
