@@ -79,8 +79,13 @@ curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 apt-get update && apt-get install yarn
 
-echo "Installing Oh My Zsh..."
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [ -d ~/.oh-my-zsh ]; then
+  echo "Updating Oh My Zsh..."
+  upgrade_oh_my_zsh
+else
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+fi
 
 echo "Installing Stacer..."
 add-apt-repository ppa:oguzhaninan/stacer -y
@@ -98,9 +103,7 @@ echo "Making Linux use Local Time..."
 timedatectl set-local-rtc 1 --adjust-system-clock
 
 echo "Creating projects folder..."
-if [ ! -d "~/projects" ]; then
-  mkdir ~/projects
-fi
+mkdir -p ~/projects/verzola/
 
 echo "Adding tmux configuration..."
 curl https://raw.githubusercontent.com/verzola/.tmux.conf/master/install.sh | bash
