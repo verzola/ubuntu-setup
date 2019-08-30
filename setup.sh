@@ -156,20 +156,18 @@ setup() {
     fi
     echo "$green> ✓ $reset"
 
-    echo "$cyan> Linking zshrc...$reset"
-    if [ ! -f ~/.zshrc ]; then
-        ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
-    fi
-    echo "$green> ✓ $reset"
-
     if [ -d ~/.oh-my-zsh ]; then
       echo "$cyan> Updating Oh My Zsh...$reset"
       zsh -ic "upgrade_oh_my_zsh"
     else
       echo "$cyan> Installing Oh My Zsh...$reset"
       sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-      exit
     fi
+    echo "$green> ✓ $reset"
+    
+    echo "$cyan> Linking zshrc...$reset"
+    rm ~/.zshrc
+    ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
     echo "$green> ✓ $reset"
 
     echo "$cyan> Installing vim-plug...$reset"
