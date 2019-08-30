@@ -43,7 +43,7 @@ apt install -y \
   filezilla
 
 echo "Cleaning APT packages..."
-apt autoremove
+apt autoremove -y
 apt autoclean
 
 echo "Installing snap apps..."
