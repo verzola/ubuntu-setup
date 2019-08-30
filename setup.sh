@@ -11,6 +11,10 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 
+exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 setup() {
     echo "Updating system..."
     apt update && apt full-upgrade -y
@@ -54,33 +58,61 @@ setup() {
     snap install google-cloud-sdk --classic
     snap install skype --classic
 
-    echo "Installing Google Chrome..."
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-    sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-    apt update && apt install google-chrome-stable
+    if exists google-chrome; then
+      echo "Google Chrome is already installed, skipping install..."
+    else
+      echo "Installing Google Chrome..."
+      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+      sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+      apt update && apt install google-chrome-stable
+    fi
 
-    echo "Installing Docker..."
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sh get-docker.sh
-    rm get-docker.sh
-    usermod -aG docker verzola
-    docker --version
+    if exists docker; then
+      echo "Docker is already installed, skipping install..."
+    else
+      echo "Installing Docker..."
+      curl -fsSL https://get.docker.com -o get-docker.sh
+      sh get-docker.sh
+      rm get-docker.sh
+      usermod -aG docker verzola
+      docker --version
+    fi
 
-    echo "Installing Docker-Compose"
-    curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-    docker-compose --version
+    if exists docker-compose; then
+      echo "Docker-compose is already installed, skipping install..."
+    else
+      echo "Installing Docker-Compose"
+      curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      chmod +x /usr/local/bin/docker-compose
+      docker-compose --version
+    fi
 
-    echo "Installing NodeJS..."
-    curl -sL https://deb.nodesource.com/setup_12.x | bash
-    apt install nodejs
-    node --version
+    if exists node; then
+      echo "NodeJS is already installed, skipping install..."
+    else
+      echo "Installing NodeJS..."
+      curl -sL https://deb.nodesource.com/setup_12.x | bash
+      apt install nodejs
+      node --version
+    fi
 
-    echo "Installing Yarn..."
-    curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-    apt-get update && apt-get install yarn
-    yarn --version
+    if exists yarn; then
+      echo "Yarn is already installed, skipping install..."
+    else
+      echo "Installing Yarn..."
+      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      apt-get update && apt-get install yarn
+      yarn --version
+    fi
+
+    if exists stacer; then
+      echo "Stacer is already installed, skipping install..."
+    else
+      echo "Installing Stacer..."
+      add-apt-repository ppa:oguzhaninan/stacer -y
+      apt install stacer -y
+    fi
 
     if [ -d ~/.oh-my-zsh ]; then
       echo "Updating Oh My Zsh..."
@@ -89,10 +121,6 @@ setup() {
       echo "Installing Oh My Zsh..."
       sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     fi
-
-    echo "Installing Stacer..."
-    add-apt-repository ppa:oguzhaninan/stacer -y
-    apt install stacer -y
 
     echo "Configuring Git..."
     git config --global user.name "Gustavo Verzola"
