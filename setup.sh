@@ -12,27 +12,35 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Helper functions
 get_latest_release() {
-    curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' | # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
 }
 
 exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+step() {
+  echo "\n$cyan> $1$reset..."
+}
+
+check() {
+  echo "$green> ✓ $reset"
+}
+
 setup() {
-    echo "\n👉 verzola's ubuntu setup 🤘$reset\n"
+  echo "\n👉 verzola's ubuntu setup 🤘"
 
-    echo "$cyan> Updating system... $reset"
+  step "Updating system"
     sudo apt update && sudo apt full-upgrade -y
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Removing apport...$reset"
+  step "Removing packages"
     sudo apt purge apport
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing APT packages...$reset"
+  step "Installing APT packages"
     sudo apt install -y \
       git \
       neovim \
@@ -52,13 +60,13 @@ setup() {
       chrome-gnome-shell \
       gnome-session \
       steam
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Cleaning APT packages...$reset"
+  step "Cleaning APT packages"
     sudo apt autoremove -y
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing snap apps...$reset"
+  step "Installing snap apps"
     sudo snap install spotify
     sudo snap install discord
     sudo snap install telegram-desktop
@@ -68,175 +76,175 @@ setup() {
     sudo snap install slack --classic
     sudo snap install google-cloud-sdk --classic
     sudo snap install skype --classic
-    echo "$green> ✓ $reset"
+  check
 
-    if exists google-chrome; then
-      echo "$cyan> Google Chrome is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing Google Chrome...$reset"
-      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-      sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-      sudo apt update && sudo apt install google-chrome-stable
-    fi
-    echo "$green> ✓ $reset"
+  if exists google-chrome; then
+    step "Google Chrome is already installed, skipping install"
+  else
+    step "Installing Google Chrome"
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+    sudo apt update && sudo apt install google-chrome-stable
+  fi
+  check
 
-    if exists docker; then
-      echo "$cyan> Docker is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing Docker...$reset"
-      curl -fsSL https://get.docker.com -o get-docker.sh
-      sh get-docker.sh
-      rm get-docker.sh
-      usermod -aG docker verzola
-      docker --version
-    fi
-    echo "$green> ✓ $reset"
+  if exists docker; then
+    step "Docker is already installed, skipping install"
+  else
+    step "Installing Docker"
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    rm get-docker.sh
+    usermod -aG docker verzola
+    docker --version
+  fi
+  check
 
-    if exists docker-compose; then
-      echo "$cyan> Docker-compose is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing Docker-Compose...$reset"
-      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      sudo chmod +x /usr/local/bin/docker-compose
-      docker-compose --version
-    fi
-    echo "$green> ✓ $reset"
+  if exists docker-compose; then
+    step "Docker-compose is already installed, skipping install"
+  else
+    step " Installing Docker-Compose"
+    sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    docker-compose --version
+  fi
+  check
 
-    if exists node; then
-      echo "$cyan> NodeJS is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing NodeJS...$reset"
-      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      sudo apt install nodejs
-      node --version
-    fi
-    echo "$green> ✓ $reset"
+  if exists node; then
+    step "NodeJS is already installed, skipping install"
+  else
+    step "Installing NodeJS"
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    sudo apt install nodejs
+    node --version
+  fi
+  check
 
-    if exists yarn; then
-      echo "$cyan> Yarn is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing Yarn...$reset"
-      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-      sudo apt-get update && sudo apt-get install yarn
-      yarn --version
-    fi
-    echo "$green> ✓ $reset"
+  if exists yarn; then
+    step "Yarn is already installed, skipping install"
+  else
+    step "Installing Yarn"
+    curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    sudo apt-get update && sudo apt-get install yarn
+    yarn --version
+  fi
+  check
 
-    if exists stacer; then
-      echo "$cyan> Stacer is already installed, skipping install...$reset"
-    else
-      echo "$cyan> Installing Stacer...$reset"
-      sudo add-apt-repository ppa:oguzhaninan/stacer -y
-      sudo apt install stacer -y
-    fi
-    echo "$green> ✓ $reset"
+  if exists stacer; then
+    step "Stacer is already installed, skipping install"
+  else
+    step "Installing Stacer"
+    sudo add-apt-repository ppa:oguzhaninan/stacer -y
+    sudo apt install stacer -y
+  fi
+  check
 
-    echo "$cyan> Allowing HTTP and SSH ports on firewall...$reset"
+  step "Allowing HTTP and SSH ports on firewall"
     sudo ufw allow 80
     sudo ufw allow 22
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Making Linux use Local Time...$reset"
+  step "Making Linux use Local Time"
     timedatectl set-local-rtc 1 --adjust-system-clock
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Configuring Git...$reset"
+  step "Configuring Git"
     git config --global user.name "Gustavo Verzola"
     git config --global user.email "verzola@gmail.com"
-    echo "$green ✓ $reset"
+  check
 
-    echo "$cyan> Creating projects folder..."
+  step "Creating projects folder..."
     mkdir -p ~/projects/verzola/
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Adding zsh config...$reset"
+  step "Adding zsh config"
     if [ ! -d ~/projects/verzola/zshrc ]; then
       git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
     else
       git -C ~/projects/verzola/zshrc pull origin master
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    if [ -d ~/.oh-my-zsh ]; then
-      echo "$cyan> Updating Oh My Zsh...$reset"
-      zsh -ic "upgrade_oh_my_zsh"
-    else
-      echo "$cyan> Installing Oh My Zsh...$reset"
-      sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    fi
-    echo "$green> ✓ $reset"
-    
-    echo "$cyan> Linking zshrc...$reset"
+  if [ -d ~/.oh-my-zsh ]; then
+    step "Updating Oh My Zsh"
+    zsh -ic "upgrade_oh_my_zsh"
+  else
+    step "Installing Oh My Zsh"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  fi
+  check
+
+  step "Linking zshrc"
     rm ~/.zshrc
     ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing vim-plug...$reset"
+  step "Installing vim-plug"
     if [ ! -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
-        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+      curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    if [ ! -d ~/projects/verzola/vimrc ]; then
-        echo "$cyan> Cloning verzola's .vimrc...$reset"
-        git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
-    else
-        echo "$cyan> Updating verzola's .vimrc...$reset"
-        git -C ~/projects/verzola/vimrc pull origin master
-    fi
-    echo "$green> ✓ $reset"
+  if [ ! -d ~/projects/verzola/vimrc ]; then
+    step "Cloning verzola's .vimrc"
+    git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
+  else
+    step "Updating verzola's .vimrc"
+    git -C ~/projects/verzola/vimrc pull origin master
+  fi
+  check
 
-    echo "$cyan> Linking vimrc...$reset"
+  step "Linking vimrc"
     if [ ! -L ~/.vimrc ]; then
-        ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
+      ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
     fi
 
     if [ ! -L ~/.config/nvim/init.vim ]; then
-        ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
+      ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing plugins...$reset"
+  step "Installing plugins"
     vim +PlugInstall +qall
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing Tmux Plugin Manager...$reset"
+  step "Installing Tmux Plugin Manager"
     if [ ! -d ~/.tmux/plugins/tpm ]; then
-        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+      git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     else
-        git -C ~/.tmux/plugins/tpm pull origin master
+      git -C ~/.tmux/plugins/tpm pull origin master
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Fetching tmux config...$reset"
+  step "Fetching tmux config"
     if [ ! -d ~/projects/verzola/tmux.conf ]; then
-        git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
+      git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
     else
-        git -C ~/projects/verzola/tmux.conf pull origin master
+      git -C ~/projects/verzola/tmux.conf pull origin master
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Linking tmux config...$reset"
+  step "Linking tmux config"
     if [ ! -f ~/.tmux.conf ]; then
-        ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
+      ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Installing Tmux plugins...$reset"
+  step "Installing Tmux plugins"
     ~/.tmux/plugins/tpm/scripts/install_plugins.sh
-    echo "$green> ✓ $reset"
+  check
 
-    echo "$cyan> Fetching aliases...$reset"
+  step "Fetching aliases"
     if [ ! -d ~/projects/verzola/aliases ]; then
-        git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
+      git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
     else
-        git -C ~/projects/verzola/aliases pull origin master
+      git -C ~/projects/verzola/aliases pull origin master
     fi
-    echo "$green> ✓ $reset"
+  check
 
-    echo "Finished! 🎉"
+  echo "Finished! 🎉"
 }
 
 setup
