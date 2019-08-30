@@ -32,164 +32,74 @@ warning() {
 }
 
 install_chrome() {
-    if exists google-chrome; then
-      warning "Google Chrome is already installed, skipping install"
-    else
-      wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-      sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-      sudo apt update && sudo apt install google-chrome-stable
-    fi
+  if exists google-chrome; then
+    warning "Google Chrome is already installed, skipping install"
+  else
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+    sudo apt update && sudo apt install google-chrome-stable
+  fi
 }
 
 install_docker() {
-    if exists docker; then
-      warning "Docker is already installed, skipping install"
-    else
-      curl -fsSL https://get.docker.com -o get-docker.sh
-      sh get-docker.sh
-      rm get-docker.sh
-      usermod -aG docker verzola
-      docker --version
-    fi
+  if exists docker; then
+    warning "Docker is already installed, skipping install"
+  else
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sh get-docker.sh
+    rm get-docker.sh
+    usermod -aG docker verzola
+    docker --version
+  fi
 }
 
 install_docker_compose() {
-    if exists docker-compose; then
-      warning "Docker-compose is already installed, skipping install"
-    else
-      sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      sudo chmod +x /usr/local/bin/docker-compose
-      docker-compose --version
-    fi
+  if exists docker-compose; then
+    warning "Docker-compose is already installed, skipping install"
+  else
+    sudo curl -L "https://github.com/docker/compose/releases/download/$(get_latest_release docker/compose)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    docker-compose --version
+  fi
 }
 
 install_nodejs() {
-    if exists node; then
-      warning "NodeJS is already installed, skipping install"
-    else
-      curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      sudo apt install nodejs
-      node --version
-    fi
+  if exists node; then
+    warning "NodeJS is already installed, skipping install"
+  else
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    sudo apt install nodejs
+    node --version
+  fi
 }
 
 install_yarn() {
-    if exists yarn; then
-      warning "Yarn is already installed, skipping install"
-    else
-      curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-      sudo apt-get update && sudo apt-get install yarn
-      yarn --version
-    fi
+  if exists yarn; then
+    warning "Yarn is already installed, skipping install"
+  else
+    curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+    sudo apt-get update && sudo apt-get install yarn
+    yarn --version
+  fi
 }
 
 install_stacer() {
-    if exists stacer; then
-      warning "Stacer is already installed, skipping install"
-    else
-      sudo add-apt-repository ppa:oguzhaninan/stacer -y
-      sudo apt install stacer -y
-    fi
+  if exists stacer; then
+    warning "Stacer is already installed, skipping install"
+  else
+    sudo add-apt-repository ppa:oguzhaninan/stacer -y
+    sudo apt install stacer -y
+  fi
 }
 
-setup() {
-  echo "\n👉 verzola's ubuntu setup 🤘"
-
-  step "Updating system"
-    sudo apt update && sudo apt full-upgrade -y
-  check
-
-  step "Removing packages"
-    sudo apt purge apport
-  check
-
-  step "Installing APT packages"
-    sudo apt install -y \
-      git \
-      neovim \
-      zsh \
-      tmux \
-      curl \
-      htop \
-      openssh-server \
-      build-essential \
-      grub-customizer \
-      shotwell \
-      krita \
-      darktable \
-      fonts-firacode \
-      gnome-tweak-tool \
-      gnome-shell-extensions \
-      chrome-gnome-shell \
-      gnome-session \
-      steam
-  check
-
-  step "Cleaning APT packages"
-    sudo apt autoremove -y
-  check
-
-  step "Installing snap apps"
-    sudo snap install spotify
-    sudo snap install discord
-    sudo snap install telegram-desktop
-    sudo snap install postman
-    sudo snap install code --classic
-    sudo snap install android-studio --classic
-    sudo snap install slack --classic
-    sudo snap install google-cloud-sdk --classic
-    sudo snap install skype --classic
-  check
-
-  step "Installing Google Chrome"
-      install_chrome
-  check
-
-  step "Installing Docker"
-      install_docker
-  check
-
-  step "Installing Docker-Compose"
-      install_docker_compose
-  check
-
-  step "Installing NodeJS"
-      install_nodejs
-  check
-
-  step "Installing Yarn"
-      install_nodejs
-  check
-
-  step "Installing Stacer"
-      install_stacer
-  check
-
-  step "Allowing HTTP and SSH ports on firewall"
-    sudo ufw allow 80
-    sudo ufw allow 22
-  check
-
-  step "Making Linux use Local Time"
-    timedatectl set-local-rtc 1 --adjust-system-clock
-  check
-
-  step "Configuring Git"
-    git config --global user.name "Gustavo Verzola"
-    git config --global user.email "verzola@gmail.com"
-  check
-
-  step "Creating projects folder"
-    mkdir -p ~/projects/verzola/
-  check
-
+configure_zsh() {
   step "Adding zsh config"
-    if [ ! -d ~/projects/verzola/zshrc ]; then
-      git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
-    else
-      git -C ~/projects/verzola/zshrc pull origin master
-    fi
+  if [ ! -d ~/projects/verzola/zshrc ]; then
+    git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
+  else
+    git -C ~/projects/verzola/zshrc pull origin master
+  fi
   check
 
   if [ -d ~/.oh-my-zsh ]; then
@@ -202,15 +112,45 @@ setup() {
   check
 
   step "Linking zshrc"
-    rm ~/.zshrc
-    ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
+  rm ~/.zshrc
+  ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
+  check
+}
+
+configure_tmux() {
+  step "Installing Tmux Plugin Manager"
+  if [ ! -d ~/.tmux/plugins/tpm ]; then
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  else
+    git -C ~/.tmux/plugins/tpm pull origin master
+  fi
   check
 
+  step "Fetching tmux config"
+  if [ ! -d ~/projects/verzola/tmux.conf ]; then
+    git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
+  else
+    git -C ~/projects/verzola/tmux.conf pull origin master
+  fi
+  check
+
+  step "Linking tmux config"
+  if [ ! -f ~/.tmux.conf ]; then
+    ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
+  fi
+  check
+
+  step "Installing tmux plugins"
+  ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+  check
+}
+
+configure_vim() {
   step "Installing vim-plug"
-    if [ ! -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
-      curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    fi
+  if [ ! -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  fi
   check
 
   if [ ! -d ~/projects/verzola/vimrc ]; then
@@ -223,52 +163,124 @@ setup() {
   check
 
   step "Linking vim config"
-    if [ ! -L ~/.vimrc ]; then
-      ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
-    fi
+  if [ ! -L ~/.vimrc ]; then
+    ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
+  fi
 
-    if [ ! -L ~/.config/nvim/init.vim ]; then
-      ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
-    fi
+  if [ ! -L ~/.config/nvim/init.vim ]; then
+    ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
+  fi
   check
 
   step "Installing vim plugins"
-    vim +PlugInstall +qall
+  vim +PlugInstall +qall
   check
+}
 
-  step "Installing Tmux Plugin Manager"
-    if [ ! -d ~/.tmux/plugins/tpm ]; then
-      git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    else
-      git -C ~/.tmux/plugins/tpm pull origin master
-    fi
-  check
-
-  step "Fetching tmux config"
-    if [ ! -d ~/projects/verzola/tmux.conf ]; then
-      git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
-    else
-      git -C ~/projects/verzola/tmux.conf pull origin master
-    fi
-  check
-
-  step "Linking tmux config"
-    if [ ! -f ~/.tmux.conf ]; then
-      ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
-    fi
-  check
-
-  step "Installing tmux plugins"
-    ~/.tmux/plugins/tpm/scripts/install_plugins.sh
-  check
-
+configure_aliases() {
   step "Fetching aliases"
-    if [ ! -d ~/projects/verzola/aliases ]; then
-      git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
-    else
-      git -C ~/projects/verzola/aliases pull origin master
-    fi
+  if [ ! -d ~/projects/verzola/aliases ]; then
+    git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
+  else
+    git -C ~/projects/verzola/aliases pull origin master
+  fi
   check
+}
+
+setup() {
+  echo "\n👉 verzola's ubuntu setup 🤘"
+
+  step "Updating system"
+  sudo apt update && sudo apt full-upgrade -y
+  check
+
+  step "Removing packages"
+  sudo apt purge apport
+  check
+
+  step "Installing APT packages"
+  sudo apt install -y \
+    git \
+    neovim \
+    zsh \
+    tmux \
+    curl \
+    htop \
+    openssh-server \
+    build-essential \
+    grub-customizer \
+    shotwell \
+    krita \
+    darktable \
+    fonts-firacode \
+    gnome-tweak-tool \
+    gnome-shell-extensions \
+    chrome-gnome-shell \
+    gnome-session \
+    steam
+  check
+
+  step "Cleaning APT packages"
+  sudo apt autoremove -y
+  check
+
+  step "Installing snap apps"
+  sudo snap install spotify
+  sudo snap install discord
+  sudo snap install telegram-desktop
+  sudo snap install postman
+  sudo snap install code --classic
+  sudo snap install android-studio --classic
+  sudo snap install slack --classic
+  sudo snap install google-cloud-sdk --classic
+  sudo snap install skype --classic
+  check
+
+  step "Installing Google Chrome"
+  install_chrome
+  check
+
+  step "Installing Docker"
+  install_docker
+  check
+
+  step "Installing Docker-Compose"
+  install_docker_compose
+  check
+
+  step "Installing NodeJS"
+  install_nodejs
+  check
+
+  step "Installing Yarn"
+  install_nodejs
+  check
+
+  step "Installing Stacer"
+  install_stacer
+  check
+
+  step "Allowing HTTP and SSH ports on firewall"
+  sudo ufw allow 80
+  sudo ufw allow 22
+  check
+
+  step "Making Linux use Local Time"
+  timedatectl set-local-rtc 1 --adjust-system-clock
+  check
+
+  step "Configuring Git"
+  git config --global user.name "Gustavo Verzola"
+  git config --global user.email "verzola@gmail.com"
+  check
+
+  step "Creating projects folder"
+  mkdir -p ~/projects/verzola/
+  check
+
+  configure_zsh
+  configure_tmux
+  configure_vim
 
   echo "\nFinished! 🎉"
 }
