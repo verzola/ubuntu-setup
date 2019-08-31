@@ -300,6 +300,7 @@ setup() {
   configure_zsh
   configure_tmux
   configure_vim
+  configure_aliases
 
   echo "\nFinished! 🎉"
 }
