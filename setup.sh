@@ -202,6 +202,7 @@ configure_vim() {
   fi
 
   if [ ! -L ~/.config/nvim/init.vim ]; then
+    mkdir -p ~/.config/nvim
     ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
   fi
   check
