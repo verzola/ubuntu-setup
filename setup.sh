@@ -120,6 +120,12 @@ install_stacer() {
   check
 }
 
+install_steam() {
+  sudo dpkg --add-architecture i386
+  sudo add-apt-repository multiverse
+  sudo apt full-upgrade
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
@@ -227,6 +233,7 @@ setup() {
 
   step "Installing APT packages"
   sudo apt install -y \
+    software-properties-common \
     git \
     neovim \
     zsh \
@@ -243,8 +250,7 @@ setup() {
     gnome-tweak-tool \
     gnome-shell-extensions \
     chrome-gnome-shell \
-    gnome-session \
-    steam
+    gnome-session 
   check
 
   step "Cleaning APT packages"
@@ -269,6 +275,7 @@ setup() {
   install_nodejs
   install_yarn
   install_stacer
+  install_steam
 
   step "Allowing ports on firewall"
   sudo ufw allow 80
