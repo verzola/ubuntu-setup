@@ -284,7 +284,7 @@ setup() {
   check
 
   step "Configure date to use Local Time"
-  timedatectl set-local-rtc 1 --adjust-system-clock
+  sudo timedatectl set-local-rtc 1 --adjust-system-clock
   check
 
   step "Configuring Git"
