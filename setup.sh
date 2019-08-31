@@ -42,7 +42,7 @@ install_chrome() {
   else
     wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
     sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-    sudo apt update && sudo apt install google-chrome-stable
+    sudo apt update && sudo apt install -y google-chrome-stable
   fi
 
   check
@@ -85,7 +85,7 @@ install_nodejs() {
     warning "NodeJS is already installed, skipping install"
   else
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-    sudo apt install nodejs
+    sudo apt install -y nodejs
     node --version
   fi
 
@@ -100,7 +100,7 @@ install_yarn() {
   else
     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     sudo echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-    sudo apt-get update && sudo apt-get install yarn
+    sudo apt update && sudo apt install -y yarn
     yarn --version
   fi
 
@@ -114,7 +114,7 @@ install_stacer() {
     warning "Stacer is already installed, skipping install"
   else
     sudo add-apt-repository ppa:oguzhaninan/stacer -y
-    sudo apt install stacer -y
+    sudo apt install -y stacer
   fi
 
   check
