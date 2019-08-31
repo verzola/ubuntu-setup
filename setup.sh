@@ -222,7 +222,7 @@ setup() {
   check
 
   step "Removing APT packages"
-  sudo apt purge apport
+  sudo apt purge -y apport
   check
 
   step "Installing APT packages"
