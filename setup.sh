@@ -124,6 +124,7 @@ install_steam() {
   sudo dpkg --add-architecture i386
   sudo add-apt-repository multiverse
   sudo apt full-upgrade
+  sudo apt install -y steam
 }
 
 configure_zsh() {
