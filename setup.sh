@@ -223,7 +223,7 @@ configure_aliases() {
 }
 
 setup() {
-  echo "\n👉 Verzola's Ubuntu 19.04 Setup 🤘"
+  echo "\n Verzola's Ubuntu 19.04 Setup"
 
   step "Updating system"
   sudo apt update && sudo apt full-upgrade -y
@@ -303,7 +303,7 @@ setup() {
   configure_vim
   configure_aliases
 
-  echo "\nFinished! 🎉"
+  echo "\nFinished!"
 }
 
 setup
