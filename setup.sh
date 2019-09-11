@@ -130,7 +130,7 @@ install_steam() {
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
-    git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
+    git clone git@github.com:verzola/.zshrc.git ~/projects/verzola/zshrc
   else
     git -C ~/projects/verzola/zshrc pull origin master
   fi
@@ -162,7 +162,7 @@ configure_tmux() {
 
   step "Fetching tmux config"
   if [ ! -d ~/projects/verzola/tmux.conf ]; then
-    git clone https://github.com/verzola/.tmux.conf ~/projects/verzola/tmux.conf
+    git clone git@github.com:verzola/.tmux.conf.git ~/projects/verzola/tmux.conf
   else
     git -C ~/projects/verzola/tmux.conf pull origin master
   fi
@@ -189,7 +189,7 @@ configure_vim() {
 
   if [ ! -d ~/projects/verzola/vimrc ]; then
     step "Fetching vim config"
-    git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
+    git clone git@github.com:verzola/.vimrc.git ~/projects/verzola/vimrc
   else
     step "Updating vim config"
     git -C ~/projects/verzola/vimrc pull origin master
@@ -215,7 +215,7 @@ configure_vim() {
 configure_aliases() {
   step "Fetching aliases"
   if [ ! -d ~/projects/verzola/aliases ]; then
-    git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
+    git clone git@github.com:verzola/aliases.git ~/projects/verzola/aliases
   else
     git -C ~/projects/verzola/aliases pull origin master
   fi
@@ -252,7 +252,8 @@ setup() {
     gnome-tweak-tool \
     gnome-shell-extensions \
     chrome-gnome-shell \
-    gnome-session 
+    gnome-session \
+    font-manager
   check
 
   step "Cleaning APT packages"
