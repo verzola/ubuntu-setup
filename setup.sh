@@ -247,7 +247,6 @@ setup() {
     grub-customizer \
     shotwell \
     krita \
-    darktable \
     fonts-firacode \
     gnome-tweak-tool \
     gnome-shell-extensions \
@@ -262,11 +261,9 @@ setup() {
 
   step "Installing snap apps"
   sudo snap install spotify
-  sudo snap install discord
   sudo snap install telegram-desktop
   sudo snap install postman
   sudo snap install code --classic
-  sudo snap install android-studio --classic
   sudo snap install slack --classic
   sudo snap install google-cloud-sdk --classic
   sudo snap install skype --classic
