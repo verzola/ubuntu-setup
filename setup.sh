@@ -127,6 +127,11 @@ install_steam() {
   sudo apt install -y steam
 }
 
+install_neovim() {
+  sudo add-apt-repository ppa:neovim-ppa/stable
+  sudo apt install -y neovim
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
@@ -237,7 +242,6 @@ setup() {
   sudo apt install -y \
     software-properties-common \
     git \
-    neovim \
     zsh \
     tmux \
     curl \
@@ -276,6 +280,7 @@ setup() {
   install_yarn
   install_stacer
   install_steam
+  install_neovim
 
   step "Allowing ports on firewall"
   sudo ufw allow 80
