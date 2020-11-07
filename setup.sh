@@ -141,15 +141,6 @@ configure_zsh() {
   fi
   check
 
-  if [ -d ~/.oh-my-zsh ]; then
-    step "Updating Oh My Zsh"
-    zsh -ic "upgrade_oh_my_zsh"
-  else
-    step "Installing Oh My Zsh"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-  fi
-  check
-
   step "Linking zshrc"
   rm ~/.zshrc
   ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
@@ -228,7 +219,7 @@ configure_aliases() {
 }
 
 setup() {
-  echo "\n Verzola's Ubuntu 19.04 Setup"
+  echo "\n Verzola's Ubuntu 20.04 Setup"
 
   step "Updating system"
   sudo apt update && sudo apt full-upgrade -y
