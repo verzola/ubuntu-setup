@@ -92,21 +92,6 @@ install_nodejs() {
   check
 }
 
-install_yarn() {
-  step "Installing Yarn"
-
-  if exists yarn; then
-    warning "Yarn is already installed, skipping install"
-  else
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-    sudo apt update && sudo apt install -y yarn
-    yarn --version
-  fi
-
-  check
-}
-
 install_stacer() {
   step "Installing Stacer"
 
@@ -238,45 +223,20 @@ setup() {
     curl \
     htop \
     openssh-server \
-    build-essential \
-    grub-customizer \
-    shotwell \
-    krita \
-    fonts-firacode \
-    gnome-tweak-tool \
-    gnome-shell-extensions \
-    chrome-gnome-shell \
-    gnome-session \
-    font-manager
+    build-essential
   check
 
   step "Cleaning APT packages"
   sudo apt autoremove -y
   check
 
-  step "Installing snap apps"
-  sudo snap install spotify
-  sudo snap install telegram-desktop
-  sudo snap install postman
-  sudo snap install code --classic
-  sudo snap install slack --classic
-  sudo snap install google-cloud-sdk --classic
-  sudo snap install skype --classic
-  check
-
   install_chrome
   install_docker
   install_docker_compose
   install_nodejs
-  install_yarn
   install_stacer
   install_steam
   install_neovim
-
-  step "Allowing ports on firewall"
-  sudo ufw allow 80
-  sudo ufw allow 22
-  check
 
   step "Configure date to use Local Time"
   sudo timedatectl set-local-rtc 1 --adjust-system-clock
