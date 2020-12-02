@@ -245,6 +245,8 @@ setup() {
   step "Configuring Git"
   git config --global user.name "Gustavo Verzola"
   git config --global user.email "verzola@gmail.com"
+  git config --global credential.helper 'cache --timeout=999999999999'
+  git config --global tag.sort -version:refname
   check
 
   step "Creating projects folder"
