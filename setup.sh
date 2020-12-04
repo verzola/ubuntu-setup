@@ -27,7 +27,7 @@ step() {
 }
 
 check() {
-  echo "$success> ✔️ $reset"
+  echo "$success> ✅$reset"
 }
 
 warning() {
@@ -84,7 +84,7 @@ install_nodejs() {
   if exists node; then
     warning "NodeJS is already installed, skipping install"
   else
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
     sudo apt install -y nodejs
     node --version
   fi
