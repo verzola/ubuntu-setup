@@ -286,6 +286,7 @@ setup() {
   git config --global user.name "Gustavo Verzola"
   git config --global user.email "verzola@gmail.com"
   git config --global tag.sort -version:refname
+  git config --global pull.rebase false
   check
 
   step "Creating projects folder"
