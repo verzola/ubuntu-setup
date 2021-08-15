@@ -122,7 +122,7 @@ configure_zsh() {
   if [ ! -d ~/projects/verzola/zshrc ]; then
     git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
   else
-    git -C ~/projects/verzola/zshrc pull origin master
+    git -C ~/projects/verzola/zshrc pull origin main
   fi
   check
 
@@ -137,7 +137,7 @@ configure_tmux() {
   if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   else
-    git -C ~/.tmux/plugins/tpm pull origin master
+    git -C ~/.tmux/plugins/tpm pull origin main
   fi
   check
 
@@ -145,7 +145,7 @@ configure_tmux() {
   if [ ! -d ~/projects/verzola/tmux.conf ]; then
     git clone https://github.com/verzola/.tmux.conf.git ~/projects/verzola/tmux.conf
   else
-    git -C ~/projects/verzola/tmux.conf pull origin master
+    git -C ~/projects/verzola/tmux.conf pull origin main
   fi
   check
 
@@ -173,7 +173,7 @@ configure_vim() {
     git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
   else
     step "Updating vim config"
-    git -C ~/projects/verzola/vimrc pull origin master
+    git -C ~/projects/verzola/vimrc pull origin main
   fi
   check
 
@@ -198,7 +198,7 @@ configure_aliases() {
   if [ ! -d ~/projects/verzola/aliases ]; then
     git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
   else
-    git -C ~/projects/verzola/aliases pull origin master
+    git -C ~/projects/verzola/aliases pull origin main
   fi
   check
 }
@@ -245,7 +245,6 @@ setup() {
   step "Configuring Git"
   git config --global user.name "Gustavo Verzola"
   git config --global user.email "verzola@gmail.com"
-  git config --global credential.helper 'cache --timeout=999999999999'
   git config --global tag.sort -version:refname
   check
 
