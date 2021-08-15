@@ -98,7 +98,6 @@ install_stacer() {
   if exists stacer; then
     warning "Stacer is already installed, skipping install"
   else
-    sudo add-apt-repository ppa:oguzhaninan/stacer -y
     sudo apt install -y stacer
   fi
 
