@@ -152,6 +152,13 @@ install_vscode() {
   sudo apt install -y code
 }
 
+install_ghcli() {
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt update
+  sudo apt install -y gh
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
@@ -271,6 +278,7 @@ setup() {
   install_nodejs
   install_neovim
   install_typora
+  install_ghcli
   install_vscode
   install_steam
   install_stacer
