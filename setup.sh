@@ -256,6 +256,7 @@ setup() {
   install_neovim
   install_telegram
   install_spotify
+  install_discord
 
   step "Configure date to use Local Time"
   sudo timedatectl set-local-rtc 1 --adjust-system-clock
