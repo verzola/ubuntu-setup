@@ -221,7 +221,7 @@ configure_aliases() {
 }
 
 setup() {
-  echo "\n Verzola's Ubuntu 20.04 Setup"
+  echo "\n Verzola's Ubuntu 21.04 Setup"
 
   step "Updating system"
   sudo apt update && sudo apt full-upgrade -y
