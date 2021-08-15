@@ -124,7 +124,8 @@ install_telegram() {
 install_spotify() {
   curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
   echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-  sudo apt-get update && sudo apt-get install -y spotify-client
+  sudo apt-get update
+  sudo apt-get install -y spotify-client
 }
 
 install_discord() {
@@ -132,6 +133,13 @@ install_discord() {
   sudo dpkg -i discord.deb
   sudo apt install -f
   sudo rm discord.deb
+}
+
+install_typora() {
+  wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
+  sudo add-apt-repository 'deb https://typora.io/linux ./'
+  sudo apt-get update
+  sudo apt-get install typora
 }
 
 configure_zsh() {
@@ -251,9 +259,10 @@ setup() {
   install_docker
   install_docker_compose
   install_nodejs
-  install_stacer
-  install_steam
   install_neovim
+  install_typora
+  install_steam
+  install_stacer
   install_telegram
   install_spotify
   install_discord
