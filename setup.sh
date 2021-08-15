@@ -127,6 +127,13 @@ install_spotify() {
   sudo apt-get update && sudo apt-get install -y spotify-client
 }
 
+install_discord() {
+  wget "https://discordapp.com/api/download?platform=linux&format=deb" -O discord.deb
+  sudo dpkg -i discord.deb
+  sudo apt install -f
+  sudo rm discord.deb
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
