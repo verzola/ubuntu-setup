@@ -287,6 +287,7 @@ setup() {
   git config --global user.email "verzola@gmail.com"
   git config --global tag.sort -version:refname
   git config --global pull.rebase false
+  git config --global push.default current
   check
 
   step "Creating projects folder"
