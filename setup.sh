@@ -172,6 +172,9 @@ configure_zsh() {
   rm ~/.zshrc
   ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
   check
+
+  step "Changing default shell to zsh"
+  chsh -s $(which zsh)
 }
 
 configure_tmux() {
