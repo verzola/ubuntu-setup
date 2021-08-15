@@ -117,6 +117,17 @@ install_neovim() {
   sudo apt install -y neovim
 }
 
+install_telegram() {
+  sudo add-apt-repository ppa:atareao/telegram
+  sudo apt-get install -y telegram
+}
+
+install_spotify() {
+  curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
+  echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+  sudo apt-get update && sudo apt-get install -y spotify-client
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
@@ -237,6 +248,8 @@ setup() {
   install_stacer
   install_steam
   install_neovim
+  install_telegram
+  install_spotify
 
   step "Configure date to use Local Time"
   sudo timedatectl set-local-rtc 1 --adjust-system-clock
