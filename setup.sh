@@ -288,6 +288,7 @@ setup() {
   git config --global tag.sort -version:refname
   git config --global pull.rebase false
   git config --global push.default current
+  git config --global pull.default current
   check
 
   step "Creating projects folder"
