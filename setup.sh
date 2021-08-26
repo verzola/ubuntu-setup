@@ -157,6 +157,14 @@ install_ghcli() {
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   sudo apt update
   sudo apt install -y gh
+  gh auth login
+}
+
+install_gcloud_sdk() {
+  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+  sudo apt install -y apt-transport-https ca-certificates gnupg
+  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+  sudo apt-get update && sudo apt-get install google-cloud-sdk
 }
 
 configure_zsh() {
@@ -282,6 +290,7 @@ setup() {
   install_neovim
   install_typora
   install_ghcli
+  install_gcloud_sdk
   install_vscode
   install_steam
   install_stacer
