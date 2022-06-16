@@ -84,7 +84,7 @@ install_nodejs() {
   if exists node; then
     warning "NodeJS is already installed, skipping install"
   else
-    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
     sudo apt install -y nodejs
     node --version
   fi
@@ -122,7 +122,7 @@ install_telegram() {
 }
 
 install_spotify() {
-  curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
+  curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
   echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
   sudo apt-get update
   sudo apt-get install -y spotify-client
@@ -133,13 +133,6 @@ install_discord() {
   sudo dpkg -i discord.deb
   sudo apt install -f
   sudo rm discord.deb
-}
-
-install_typora() {
-  wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
-  sudo add-apt-repository 'deb https://typora.io/linux ./'
-  sudo apt-get update
-  sudo apt-get install -y typora
 }
 
 install_vscode() {
@@ -157,7 +150,7 @@ install_ghcli() {
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   sudo apt update
   sudo apt install -y gh
-  gh auth login
+  #gh auth login
 }
 
 install_gcloud_sdk() {
@@ -257,7 +250,7 @@ configure_aliases() {
 }
 
 setup() {
-  echo "\n Verzola's Ubuntu 21.04 Setup"
+  echo "\n Verzola's Ubuntu 20.04 Setup"
 
   step "Updating system"
   sudo apt update && sudo apt full-upgrade -y
@@ -288,7 +281,6 @@ setup() {
   install_docker_compose
   install_nodejs
   install_neovim
-  install_typora
   install_ghcli
   install_gcloud_sdk
   install_vscode
