@@ -160,6 +160,12 @@ install_gcloud_sdk() {
   sudo apt-get update && sudo apt-get install google-cloud-sdk
 }
 
+install_bitwarden() {
+  wget "https://vault.bitwarden.com/download/?app=desktop&platform=linux&variant=deb"
+  sudo dpkg -i Bitwarden-*.deb
+  rm Bitwarden-*.deb
+}
+
 configure_zsh() {
   step "Adding zsh config"
   if [ ! -d ~/projects/verzola/zshrc ]; then
@@ -292,9 +298,11 @@ setup() {
   install_telegram
   install_spotify
   install_discord
+  install_bitwarden
   
-  step "Install yarn"
+  step "Install yarn and npm-check-updates"
   sudo npm install -g yarn
+  sudo npm install -g npm-check-updates
   check
   
   step "install fantasque sans mono font"
