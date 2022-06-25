@@ -189,7 +189,7 @@ configure_tmux() {
   if [ ! -d ~/.tmux/plugins/tpm ]; then
     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   else
-    git -C ~/.tmux/plugins/tpm pull origin main
+    git -C ~/.tmux/plugins/tpm pull origin master
   fi
   check
 
