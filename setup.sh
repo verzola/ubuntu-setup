@@ -309,7 +309,7 @@ setup() {
   mkdir -p $HOME/.fonts/
   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
   unzip FantasqueSansMono.zip
-  mv "*.ttf" $HOME/.fonts/
+  mv *.ttf $HOME/.fonts/
   check
 
   step "Install dracula gedit theme"
