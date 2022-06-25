@@ -112,12 +112,12 @@ install_steam() {
 }
 
 install_neovim() {
-  sudo add-apt-repository ppa:neovim-ppa/stable
+  sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt install -y neovim
 }
 
 install_telegram() {
-  sudo add-apt-repository ppa:atareao/telegram
+  sudo add-apt-repository -y ppa:atareao/telegram
   sudo apt-get install -y telegram
 }
 
@@ -170,7 +170,7 @@ configure_zsh() {
   check
 
   step "Linking zshrc"
-  rm ~/.zshrc
+  rm -f ~/.zshrc
   ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
   check
 
