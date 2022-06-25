@@ -269,7 +269,10 @@ setup() {
     curl \
     htop \
     openssh-server \
-    build-essential
+    build-essential \
+    ansible \
+    gnome-tweak-tool \
+    gnome-session
   check
 
   step "Cleaning APT packages"
@@ -289,9 +292,30 @@ setup() {
   install_telegram
   install_spotify
   install_discord
+  
+  step "Install yarn"
+  sudo npm install -g yarn
+  check
+  
+  step "install fantasque sans mono font"
+  mkdir -p $HOME/.fonts/
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
+  unzip FantasqueSansMono.zip
+  mv "*.ttf" $HOME/.fonts/
+  check
+
+  step "Install dracula gedit theme"
+  mkdir -p $HOME/.local/share/gedit/styles/
+  wget https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
+  mv dracula.xml $HOME/.local/share/gedit/styles/
+  check
 
   step "Configure date to use Local Time"
   sudo timedatectl set-local-rtc 1 --adjust-system-clock
+  check
+  
+  step "Create user bin folder"
+  mkdir -p $HOME/bin
   check
 
   step "Configuring Git"
