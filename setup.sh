@@ -161,9 +161,9 @@ install_gcloud_sdk() {
 }
 
 install_bitwarden() {
-  wget "https://vault.bitwarden.com/download/?app=desktop&platform=linux&variant=deb"
-  sudo dpkg -i Bitwarden-*.deb
-  rm Bitwarden-*.deb
+  wget "https://vault.bitwarden.com/download/?app=desktop&platform=linux&variant=deb" -O bitwarden.deb
+  sudo dpkg -i Bitwarden.deb
+  rm bitwarden.deb
 }
 
 configure_zsh() {
