@@ -34,12 +34,60 @@ warning() {
   echo "$warning>⚠️  $1"
 }
 
+install_packages() {
+  step "Installing APT packages"
+
+  sudo apt install -y \
+    ansible \
+    apt-transport-https \
+    build-essential \
+    curl \
+    git \
+    gnome-session \
+    gnome-tweak-tool \
+    htop \
+    neofetch \
+    openjdk-11-jdk \
+    openssh-server \
+    software-properties-common \
+    tmux \
+    virtualbox \
+    zsh
+  check
+}
+
+update_system() {
+  step "Updating system"
+  sudo apt update && sudo apt full-upgrade -y
+  check
+}
+
+remove_packages() {
+  step "Removing APT packages"
+  sudo apt purge -y apport
+  check
+}
+
+cleanup_packages() {
+  step "Cleaning APT packages"
+  sudo apt autoremove -y
+  check
+}
+
 install_brave() {
-  sudo apt install apt-transport-https curl
-  sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-  echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-  sudo apt update
-  sudo apt install brave-browser
+  step "Installing Brave Browser"
+
+  if exists brave-browser; then
+    warning "Docker is already installed, skipping install"
+  else
+    sudo apt install -y apt-transport-https curl
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    sudo apt update
+    sudo apt install -y brave-browser
+  fi
+
+  check
 }
 
 install_docker() {
@@ -99,37 +147,48 @@ install_stacer() {
 }
 
 install_steam() {
+  step "Installing Steam"
   sudo dpkg --add-architecture i386
   sudo add-apt-repository multiverse
   sudo apt full-upgrade
   sudo apt install -y steam
+  check
 }
 
 install_neovim() {
+  step "Installing Neovim"
   sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt install -y neovim
+  check
 }
 
 install_telegram() {
+  step "Installing Telegram"
   sudo add-apt-repository -y ppa:atareao/telegram
   sudo apt-get install -y telegram
+  check
 }
 
 install_spotify() {
+  step "Installing Spotify"
   curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
   echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
   sudo apt-get update
   sudo apt-get install -y spotify-client
+  check
 }
 
 install_discord() {
+  step "Installing Discord"
   wget "https://discordapp.com/api/download?platform=linux&format=deb" -O discord.deb
   sudo dpkg -i discord.deb
   sudo apt install -f
   sudo rm discord.deb
+  check
 }
 
 install_vscode() {
+  step "Installing VSCode"
   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
   sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
   sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
@@ -137,27 +196,93 @@ install_vscode() {
   sudo apt install -y apt-transport-https
   sudo apt update
   sudo apt install -y code
+  check
 }
 
 install_ghcli() {
+  step "Installing GH-CLI"
   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   sudo apt update
   sudo apt install -y gh
   #gh auth login
+  check
 }
 
 install_gcloud_sdk() {
+  step "Installing gcloud sdk"
   echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
   sudo apt install -y apt-transport-https ca-certificates gnupg
   curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
   sudo apt-get update && sudo apt-get install google-cloud-sdk
+  check
 }
 
 install_bitwarden() {
+  step "Installing bitwarden"
   wget "https://vault.bitwarden.com/download/?app=desktop&platform=linux&variant=deb" -O bitwarden.deb
   sudo dpkg -i bitwarden.deb
   rm bitwarden.deb
+  check
+}
+
+install_hashicorp() {
+  step "Installing hashicorp stuff"
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  sudo apt-add-repository -y "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  sudo apt-get update && sudo apt install -y vagrant terraform
+  check
+}
+
+install_yarn() {
+  step "Install yarn and npm-check-updates"
+  sudo npm install -g yarn
+  sudo npm install -g npm-check-updates
+  check
+  
+}
+
+install_fonts() {
+  step "install fantasque sans mono font"
+  mkdir -p $HOME/.fonts/
+  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
+  unzip FantasqueSansMono.zip
+  mv *.ttf $HOME/.fonts/
+  rm FantasqueSansMono.zip
+  check
+
+}
+
+install_themes() {
+  step "Install dracula gedit theme"
+  mkdir -p $HOME/.local/share/gedit/styles/
+  wget https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
+  mv dracula.xml $HOME/.local/share/gedit/styles/
+  check
+}
+
+configure_git() {
+  step "Configuring Git"
+  git config --global user.name "Gustavo Verzola"
+  git config --global user.email "verzola@gmail.com"
+  git config --global tag.sort -version:refname
+  git config --global pull.rebase false
+  git config --global push.default current
+  git config --global pull.default current
+  check
+}
+
+create_folders() {
+  step "Create user bin folder"
+  mkdir -p $HOME/bin $HOME/projects/verzola
+  check
+}
+
+adjust_clock() {
+  step "Configure date to use Local Time"
+  sudo timedatectl set-local-rtc 1 --adjust-system-clock
+  check
+  
 }
 
 configure_zsh() {
@@ -252,95 +377,35 @@ configure_aliases() {
 setup() {
   echo "\n Verzola's Ubuntu 20.04 Setup"
 
-  step "Updating system"
-  sudo apt update && sudo apt full-upgrade -y
-  check
-
-  step "Removing APT packages"
-  sudo apt purge -y apport
-  check
-
-  step "Installing APT packages"
-  sudo apt install -y \
-    software-properties-common \
-    git \
-    zsh \
-    tmux \
-    curl \
-    htop \
-    openssh-server \
-    build-essential \
-    ansible \
-    gnome-tweak-tool \
-    gnome-session \
-    virtualbox \
-    vagrant \
-    openjdk-11-jdk
-  check
-
-  step "Cleaning APT packages"
-  sudo apt autoremove -y
-  check
-
+  install_packages
+  update_system
+  remove_packages
+  cleanup_packages
   install_brave
-  install_docker
-  install_docker_compose
   install_nodejs
   install_neovim
-  install_ghcli
-  install_gcloud_sdk
   install_vscode
   install_steam
+  install_bitwarden
+  install_hashicorp
+  install_gcloud_sdk
+  install_ghcli
   install_stacer
   install_telegram
   install_spotify
-  install_discord
-  install_bitwarden
-  
-  step "Install yarn and npm-check-updates"
-  sudo npm install -g yarn
-  sudo npm install -g npm-check-updates
-  check
-  
-  step "install fantasque sans mono font"
-  mkdir -p $HOME/.fonts/
-  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
-  unzip FantasqueSansMono.zip
-  mv *.ttf $HOME/.fonts/
-  rm FantasqueSansMono.zip
-  check
-
-  step "Install dracula gedit theme"
-  mkdir -p $HOME/.local/share/gedit/styles/
-  wget https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
-  mv dracula.xml $HOME/.local/share/gedit/styles/
-  check
-
-  step "Configure date to use Local Time"
-  sudo timedatectl set-local-rtc 1 --adjust-system-clock
-  check
-  
-  step "Create user bin folder"
-  mkdir -p $HOME/bin
-  check
-
-  step "Configuring Git"
-  git config --global user.name "Gustavo Verzola"
-  git config --global user.email "verzola@gmail.com"
-  git config --global tag.sort -version:refname
-  git config --global pull.rebase false
-  git config --global push.default current
-  git config --global pull.default current
-  check
-
-  step "Creating projects folder"
-  mkdir -p ~/projects/verzola/
-  check
-
+  install_docker
+  install_docker_compose
+  install_yarn
+  install_fonts
+  install_themes
+  #install_discord
+  create_folders
   configure_zsh
   configure_tmux
   configure_vim
   configure_aliases
+  configure_git
+  adjust_clock
 
   echo "\nFinished!"
 }
