@@ -34,18 +34,12 @@ warning() {
   echo "$warning>⚠️  $1"
 }
 
-install_chrome() {
-  step "Installing Google Chrome"
-
-  if exists google-chrome; then
-    warning "Google Chrome is already installed, skipping install"
-  else
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-    sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-    sudo apt update && sudo apt install -y google-chrome-stable
-  fi
-
-  check
+install_brave() {
+  sudo apt install apt-transport-https curl
+  sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+  sudo apt update
+  sudo apt install brave-browser
 }
 
 install_docker() {
@@ -278,14 +272,17 @@ setup() {
     build-essential \
     ansible \
     gnome-tweak-tool \
-    gnome-session
+    gnome-session \
+    virtualbox \
+    vagrant \
+    openjdk-11-jdk
   check
 
   step "Cleaning APT packages"
   sudo apt autoremove -y
   check
 
-  install_chrome
+  install_brave
   install_docker
   install_docker_compose
   install_nodejs
