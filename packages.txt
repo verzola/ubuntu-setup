@@ -1,5 +1,6 @@
 ansible
 apt-transport-https
+btop
 build-essential
 curl
 git
@@ -8,6 +9,7 @@ gnome-tweaks
 htop
 i3
 i3status
+kitty
 neofetch
 nitrogen
 openjdk-11-jdk

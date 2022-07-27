@@ -235,21 +235,26 @@ install_themes() {
   check
 }
 
+install_starship() {
+  step "Install starship"
+  curl -sS https://starship.rs/install.sh | sh
+  check
+}
+
 create_folders() {
   step "Create user bin folder"
   mkdir -p $HOME/bin $HOME/projects
   check
 }
 
-adjust_clock() {
-  step "Configure date to use Local Time"
-  sudo timedatectl set-local-rtc 1 --adjust-system-clock
+configure_dotfiles() {
+  step "Fetching dotfiles"
+  if [ ! -d ~/dotfiles ]; then
+    git clone https://github.com/verzola/dotfiles.git ~/dotfiles
+  else
+    git -C ~/dotfiles pull origin main
+  fi
   check
-}
-
-configure_zsh() {
-  step "Changing default shell to zsh"
-  chsh -s $(which zsh)
 }
 
 configure_tmux() {
@@ -266,13 +271,14 @@ configure_tmux() {
   check
 }
 
-configure_dotfiles() {
-  step "Fetching dotfiles"
-  if [ ! -d ~/dotfiles ]; then
-    git clone https://github.com/verzola/dotfiles.git ~/dotfiles
-  else
-    git -C ~/dotfiles pull origin main
-  fi
+configure_zsh() {
+  step "Changing default shell to zsh"
+  chsh -s $(which zsh)
+}
+
+adjust_clock() {
+  step "Configure date to use Local Time"
+  sudo timedatectl set-local-rtc 1 --adjust-system-clock
   check
 }
 
@@ -302,11 +308,12 @@ setup() {
   install_yarn
   install_fonts
   install_themes
-  create_folders
+  install_starship
+  adjust_clock
   configure_dotfiles
   configure_tmux
   configure_zsh
-  adjust_clock
+  create_folders
 
   echo "\nFinished!"
 }
