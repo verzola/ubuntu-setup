@@ -37,22 +37,7 @@ warning() {
 install_packages() {
   step "Installing APT packages"
 
-  sudo apt install -y \
-    ansible \
-    apt-transport-https \
-    build-essential \
-    curl \
-    git \
-    gnome-session \
-    gnome-tweak-tool \
-    htop \
-    neofetch \
-    openjdk-11-jdk \
-    openssh-server \
-    software-properties-common \
-    tmux \
-    virtualbox \
-    zsh
+  xargs -a packages.txt sudo apt install -y
   check
 }
 
@@ -178,15 +163,6 @@ install_spotify() {
   check
 }
 
-install_discord() {
-  step "Installing Discord"
-  wget "https://discordapp.com/api/download?platform=linux&format=deb" -O discord.deb
-  sudo dpkg -i discord.deb
-  sudo apt install -f
-  sudo rm discord.deb
-  check
-}
-
 install_vscode() {
   step "Installing VSCode"
   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -239,7 +215,6 @@ install_yarn() {
   sudo npm install -g yarn
   sudo npm install -g npm-check-updates
   check
-  
 }
 
 install_fonts() {
@@ -250,7 +225,6 @@ install_fonts() {
   mv *.ttf $HOME/.fonts/
   rm FantasqueSansMono.zip
   check
-
 }
 
 install_themes() {
@@ -261,20 +235,9 @@ install_themes() {
   check
 }
 
-configure_git() {
-  step "Configuring Git"
-  git config --global user.name "Gustavo Verzola"
-  git config --global user.email "verzola@gmail.com"
-  git config --global tag.sort -version:refname
-  git config --global pull.rebase false
-  git config --global push.default current
-  git config --global pull.default current
-  check
-}
-
 create_folders() {
   step "Create user bin folder"
-  mkdir -p $HOME/bin $HOME/projects/verzola
+  mkdir -p $HOME/bin $HOME/projects
   check
 }
 
@@ -282,23 +245,9 @@ adjust_clock() {
   step "Configure date to use Local Time"
   sudo timedatectl set-local-rtc 1 --adjust-system-clock
   check
-  
 }
 
 configure_zsh() {
-  step "Adding zsh config"
-  if [ ! -d ~/projects/verzola/zshrc ]; then
-    git clone https://github.com/verzola/.zshrc.git ~/projects/verzola/zshrc
-  else
-    git -C ~/projects/verzola/zshrc pull origin main
-  fi
-  check
-
-  step "Linking zshrc"
-  rm -f ~/.zshrc
-  ln -s ~/projects/verzola/zshrc/.zshrc ~/.zshrc
-  check
-
   step "Changing default shell to zsh"
   chsh -s $(which zsh)
 }
@@ -312,64 +261,17 @@ configure_tmux() {
   fi
   check
 
-  step "Fetching tmux config"
-  if [ ! -d ~/projects/verzola/tmux.conf ]; then
-    git clone https://github.com/verzola/.tmux.conf.git ~/projects/verzola/tmux.conf
-  else
-    git -C ~/projects/verzola/tmux.conf pull origin main
-  fi
-  check
-
-  step "Linking tmux config"
-  if [ ! -f ~/.tmux.conf ]; then
-    ln -s ~/projects/verzola/tmux.conf/.tmux.conf ~/.tmux.conf
-  fi
-  check
-
   step "Installing tmux plugins"
   ~/.tmux/plugins/tpm/scripts/install_plugins.sh
   check
 }
 
-configure_vim() {
-  step "Installing vim-plug"
-  if [ ! -f ~/.local/share/nvim/site/autoload/plug.vim ]; then
-    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  fi
-  check
-
-  if [ ! -d ~/projects/verzola/vimrc ]; then
-    step "Fetching vim config"
-    git clone https://github.com/verzola/.vimrc.git ~/projects/verzola/vimrc
+configure_dotfiles() {
+  step "Fetching dotfiles"
+  if [ ! -d ~/dotfiles ]; then
+    git clone https://github.com/verzola/dotfiles.git ~/dotfiles
   else
-    step "Updating vim config"
-    git -C ~/projects/verzola/vimrc pull origin main
-  fi
-  check
-
-  step "Linking vim config"
-  if [ ! -L ~/.vimrc ]; then
-    ln -s ~/projects/verzola/vimrc/.vimrc ~/.vimrc
-  fi
-
-  if [ ! -L ~/.config/nvim/init.vim ]; then
-    mkdir -p ~/.config/nvim
-    ln -s ~/projects/verzola/vimrc/.vimrc ~/.config/nvim/init.vim
-  fi
-  check
-
-  step "Installing vim plugins"
-  vim +PlugInstall +qall
-  check
-}
-
-configure_aliases() {
-  step "Fetching aliases"
-  if [ ! -d ~/projects/verzola/aliases ]; then
-    git clone https://github.com/verzola/aliases.git ~/projects/verzola/aliases
-  else
-    git -C ~/projects/verzola/aliases pull origin main
+    git -C ~/dotfiles pull origin main
   fi
   check
 }
@@ -377,10 +279,12 @@ configure_aliases() {
 setup() {
   echo "\n Verzola's Ubuntu 20.04 Setup"
 
+  # basic
   install_packages
   update_system
   remove_packages
   cleanup_packages
+
   install_brave
   install_nodejs
   install_neovim
@@ -398,13 +302,10 @@ setup() {
   install_yarn
   install_fonts
   install_themes
-  #install_discord
   create_folders
-  configure_zsh
+  configure_dotfiles
   configure_tmux
-  configure_vim
-  configure_aliases
-  configure_git
+  configure_zsh
   adjust_clock
 
   echo "\nFinished!"
