@@ -3,6 +3,7 @@ apt-transport-https
 btop
 build-essential
 curl
+gdm3
 git
 gnome-session
 gnome-tweaks
@@ -18,5 +19,7 @@ picom
 rofi
 software-properties-common
 tmux
+unzip
+vim
 virtualbox
 zsh
