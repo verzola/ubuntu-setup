@@ -112,6 +112,11 @@ install_nvm() {
     warning "NVM is already installed, skipping install"
   else
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install stable
+    nvm use stable
+    nvm alias default stable
   fi
 
   check
@@ -131,7 +136,11 @@ install_stacer() {
 
 install_neovim() {
   step "Installing Neovim"
-  wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -P ~/bin
+  if exists nvim; then
+    warning "Neovim is already installed, skipping install"
+  else
+    wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/bin/nvim
+  fi
   check
 }
 
@@ -186,10 +195,12 @@ install_hashicorp() {
   check
 }
 
-install_yarn() {
+install_npm_packages() {
   step "Install yarn and npm-check-updates"
-  sudo npm install -g yarn
-  sudo npm install -g npm-check-updates
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  npm install -g yarn
+  npm install -g npm-check-updates
   check
 }
 
@@ -218,9 +229,13 @@ install_starship() {
 }
 
 install_fzf() {
-  step "Install starship"
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf;
-  ~/.fzf/install
+  step "Install fzf"
+  if exists fzf; then
+    warning "FZF is already installed, skipping install"
+  else
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf;
+    ~/.fzf/install
+  fi
   check
 }
 
@@ -237,6 +252,7 @@ configure_dotfiles() {
   else
     git -C ~/dotfiles pull origin main
   fi
+  sh -c "cd ~/dotfiles && make"
   check
 }
 
@@ -268,7 +284,6 @@ adjust_clock() {
 setup() {
   echo "\n Verzola's Ubuntu 22.04 Setup"
 
-  # basic
   install_packages
   update_system
   remove_packages
@@ -286,7 +301,7 @@ setup() {
   install_spotify
   install_docker
   install_docker_compose
-  install_yarn
+  install_npm_packages
   install_fonts
   install_themes
   install_starship
