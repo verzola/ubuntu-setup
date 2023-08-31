@@ -105,15 +105,13 @@ install_docker_compose() {
   check
 }
 
-install_nodejs() {
-  step "Installing NodeJS"
+install_nvm() {
+  step "Installing NVM"
 
-  if exists node; then
-    warning "NodeJS is already installed, skipping install"
+  if exists nvm; then
+    warning "NVM is already installed, skipping install"
   else
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-    sudo apt install -y nodejs
-    node --version
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
   fi
 
   check
@@ -131,19 +129,9 @@ install_stacer() {
   check
 }
 
-install_steam() {
-  step "Installing Steam"
-  sudo dpkg --add-architecture i386
-  sudo add-apt-repository multiverse
-  sudo apt full-upgrade
-  sudo apt install -y steam
-  check
-}
-
 install_neovim() {
   step "Installing Neovim"
-  sudo add-apt-repository -y ppa:neovim-ppa/stable
-  sudo apt install -y neovim
+  wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -P ~/bin
   check
 }
 
@@ -160,18 +148,6 @@ install_spotify() {
   echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
   sudo apt-get update
   sudo apt-get install -y spotify-client
-  check
-}
-
-install_vscode() {
-  step "Installing VSCode"
-  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-  sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
-  sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
-  rm -f packages.microsoft.gpg
-  sudo apt install -y apt-transport-https
-  sudo apt update
-  sudo apt install -y code
   check
 }
 
@@ -241,6 +217,13 @@ install_starship() {
   check
 }
 
+install_fzf() {
+  step "Install starship"
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf;
+  ~/.fzf/install
+  check
+}
+
 create_folders() {
   step "Create user bin folder"
   mkdir -p $HOME/bin $HOME/projects
@@ -283,19 +266,17 @@ adjust_clock() {
 }
 
 setup() {
-  echo "\n Verzola's Ubuntu 20.04 Setup"
+  echo "\n Verzola's Ubuntu 22.04 Setup"
 
   # basic
   install_packages
   update_system
   remove_packages
   cleanup_packages
-
+  create_folders
   install_brave
-  install_nodejs
+  install_nvm
   install_neovim
-  install_vscode
-  install_steam
   install_bitwarden
   install_hashicorp
   install_gcloud_sdk
@@ -309,11 +290,11 @@ setup() {
   install_fonts
   install_themes
   install_starship
+  install_fzf
   adjust_clock
   configure_dotfiles
   configure_tmux
   configure_zsh
-  create_folders
 
   echo "\nFinished!"
 }
