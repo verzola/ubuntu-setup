@@ -26,4 +26,5 @@ software-properties-common
 tmux
 unzip
 vim
+xclip
 zsh
