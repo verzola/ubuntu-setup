@@ -201,7 +201,12 @@ install_npm_packages() {
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   npm install -g yarn
   npm install -g npm-check-updates
+  npm install -g neovim
   check
+}
+
+install_pip_packages() {
+  pip install pynvim
 }
 
 install_fonts() {
@@ -302,6 +307,7 @@ setup() {
   install_docker
   install_docker_compose
   install_npm_packages
+  install_pip_packages
   install_fonts
   install_themes
   install_starship
