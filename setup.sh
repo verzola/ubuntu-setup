@@ -36,7 +36,6 @@ warning() {
 
 install_packages() {
   step "Installing APT packages"
-
   xargs -a packages.txt sudo apt install -y
   check
 }
@@ -59,6 +58,12 @@ cleanup_packages() {
   check
 }
 
+create_folders() {
+  step "Create user bin folder"
+  mkdir -p $HOME/bin $HOME/projects
+  check
+}
+
 install_brave() {
   step "Installing Brave Browser"
 
@@ -72,6 +77,33 @@ install_brave() {
     sudo apt install -y brave-browser
   fi
 
+  check
+}
+
+install_nvm() {
+  step "Installing NVM"
+
+  if exists nvm; then
+    warning "NVM is already installed, skipping install"
+  else
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm install stable
+    nvm use stable
+    nvm alias default stable
+  fi
+
+  check
+}
+
+install_neovim() {
+  step "Installing Neovim"
+  if exists nvim; then
+    warning "Neovim is already installed, skipping install"
+  else
+    wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/bin/nvim
+  fi
   check
 }
 
@@ -105,23 +137,6 @@ install_docker_compose() {
   check
 }
 
-install_nvm() {
-  step "Installing NVM"
-
-  if exists nvm; then
-    warning "NVM is already installed, skipping install"
-  else
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install stable
-    nvm use stable
-    nvm alias default stable
-  fi
-
-  check
-}
-
 install_stacer() {
   step "Installing Stacer"
 
@@ -131,16 +146,6 @@ install_stacer() {
     sudo apt install -y stacer
   fi
 
-  check
-}
-
-install_neovim() {
-  step "Installing Neovim"
-  if exists nvim; then
-    warning "Neovim is already installed, skipping install"
-  else
-    wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -O ~/bin/nvim
-  fi
   check
 }
 
@@ -246,9 +251,9 @@ install_fzf() {
   check
 }
 
-create_folders() {
-  step "Create user bin folder"
-  mkdir -p $HOME/bin $HOME/projects
+adjust_clock() {
+  step "Configure date to use Local Time"
+  sudo timedatectl set-local-rtc 1 --adjust-system-clock
   check
 }
 
@@ -280,11 +285,13 @@ configure_tmux() {
 configure_zsh() {
   step "Changing default shell to zsh"
   chsh -s $(which zsh)
+  check
 }
 
-adjust_clock() {
-  step "Configure date to use Local Time"
-  sudo timedatectl set-local-rtc 1 --adjust-system-clock
+tweak_inotify() {
+  step "Tweaking inotify"
+  echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+  cat /proc/sys/fs/inotify/max_user_watches
   check
 }
 
@@ -296,9 +303,17 @@ setup() {
   remove_packages
   cleanup_packages
   create_folders
-  install_brave
   install_nvm
+  install_npm_packages
+  install_pip_packages
+  install_fonts
+  install_themes
+  install_starship
+  install_fzf
   install_neovim
+  install_docker
+  install_docker_compose
+  install_brave
   install_bitwarden
   install_hashicorp
   install_gcloud_sdk
@@ -306,18 +321,11 @@ setup() {
   install_stacer
   install_telegram
   install_spotify
-  install_docker
-  install_docker_compose
-  install_npm_packages
-  install_pip_packages
-  install_fonts
-  install_themes
-  install_starship
-  install_fzf
   adjust_clock
   configure_dotfiles
   configure_tmux
   configure_zsh
+  tweak_inotify
 
   echo "\nFinished!"
 }
