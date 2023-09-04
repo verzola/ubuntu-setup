@@ -196,7 +196,7 @@ install_hashicorp() {
 }
 
 install_npm_packages() {
-  step "Install yarn and npm-check-updates"
+  step "Installing npm packages"
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   npm install -g yarn
@@ -206,11 +206,13 @@ install_npm_packages() {
 }
 
 install_pip_packages() {
+  step "Installing pip packages"
   pip install pynvim
+  check
 }
 
 install_fonts() {
-  step "install fantasque sans mono font"
+  step "Installing FantasqueSansMono nerd font"
   mkdir -p $HOME/.fonts/
   wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
   unzip FantasqueSansMono.zip
@@ -220,7 +222,7 @@ install_fonts() {
 }
 
 install_themes() {
-  step "Install dracula gedit theme"
+  step "Installing dracula gedit theme"
   mkdir -p $HOME/.local/share/gedit/styles/
   wget https://raw.githubusercontent.com/dracula/gedit/master/dracula.xml
   mv dracula.xml $HOME/.local/share/gedit/styles/
@@ -228,13 +230,13 @@ install_themes() {
 }
 
 install_starship() {
-  step "Install starship"
+  step "Installing starship"
   curl -sS https://starship.rs/install.sh | sh
   check
 }
 
 install_fzf() {
-  step "Install fzf"
+  step "Installing fzf"
   if exists fzf; then
     warning "FZF is already installed, skipping install"
   else
