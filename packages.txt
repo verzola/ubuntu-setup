@@ -17,4 +17,5 @@ software-properties-common
 stow
 unzip
 xclip
+zeal
 zsh

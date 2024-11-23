@@ -210,17 +210,8 @@ install_pip_packages() {
 }
 
 install_fonts() {
-  step "Installing FantasqueSansMono nerd font"
-  if [ -f "$HOME/.fonts/FantasqueSansMono.ttf" ]; then
-    warning "Font already installed, skipping"
-    return
-  fi
-
   mkdir -p $HOME/.fonts/
-  wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FantasqueSansMono.zip
-  unzip FantasqueSansMono.zip
-  mv *.ttf $HOME/.fonts/
-  rm FantasqueSansMono.zip
+  bash nerdfont_install.sh
   check
 }
 
@@ -317,32 +308,37 @@ add_to_sudoers() {
 setup() {
   echo "\n Verzola's Ubuntu Setup"
 
-  install_packages
-  update_system
-  cleanup_packages
-  create_folders
-  install_brave
-  install_nvm
-  install_npm_packages
-  install_fonts
-  install_themes
-  install_starship
-  install_fzf
-  install_neovim
-  install_docker
-  install_docker_compose
-  install_bitwarden
-  install_hashicorp
-  install_ghcli
-  install_stacer
-  install_spotify
-  adjust_clock
-  configure_dotfiles
-  configure_zsh
-  tweak_inotify
-  add_to_sudoers
-
-  echo "\nFinished!"
+  if [ -z "$1" ]; then
+    # No argument passed, run all steps
+    install_packages
+    update_system
+    cleanup_packages
+    create_folders
+    install_brave
+    install_nvm
+    install_npm_packages
+    install_themes
+    install_starship
+    install_fzf
+    install_neovim
+    install_docker
+    install_docker_compose
+    install_bitwarden
+    install_hashicorp
+    install_ghcli
+    install_stacer
+    install_spotify
+    adjust_clock
+    configure_dotfiles
+    configure_zsh
+    tweak_inotify
+    add_to_sudoers
+    install_fonts
+    echo "\nFinished!"
+  else
+    # Argument passed, run specific step
+    "$1"
+  fi
 }
 
-setup
+setup "$1"
