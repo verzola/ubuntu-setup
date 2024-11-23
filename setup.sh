@@ -199,6 +199,7 @@ install_npm_packages() {
   npm install -g yarn
   npm install -g npm-check-updates
   npm install -g neovim
+  npm install -g prettier
   check
 }
 

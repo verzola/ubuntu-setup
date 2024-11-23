@@ -12,6 +12,7 @@ kitty
 libfuse2
 neofetch
 openjdk-11-jdk
+ripgrep
 software-properties-common
 stow
 unzip
